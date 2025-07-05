@@ -12,10 +12,11 @@ class DetalheRemedioPage extends StatefulWidget {
 class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
   int comprimidos = 3;
   List<TimeOfDay> horarios = [
-    const TimeOfDay(hour: 8, minute: 30),
-    const TimeOfDay(hour: 16, minute: 30),
-    const TimeOfDay(hour: 0, minute: 30),
+    TimeOfDay(hour: 8, minute: 30),
+    TimeOfDay(hour: 16, minute: 30),
+    TimeOfDay(hour: 0, minute: 30),
   ];
+
 
   String formatarHora(TimeOfDay t) {
     final h = t.hour.toString().padLeft(2, '0');
@@ -43,11 +44,10 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
       backgroundColor: const Color(0xFFF2F2F2),
       appBar: AppBar(
         backgroundColor: Colors.white,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
+        iconTheme: IconThemeData(color: Colors.black),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -56,7 +56,7 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(16),
               ),
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(16),
               child: Row(
                 children: [
                   CircleAvatar(
@@ -64,12 +64,12 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
                     radius: 28,
                     child: Icon(r['icone'], color: Colors.black, size: 28),
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: 12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(r['nome'], style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                        Text(r['nome'], style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                         Text(r['tipo']),
                       ],
                     ),
@@ -77,26 +77,26 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Text(r['frequencia'], style: const TextStyle(color: Colors.green)),
-                      const SizedBox(height: 4),
-                      Text(r['duracao'], style: const TextStyle(fontWeight: FontWeight.bold)),
-                      const Icon(Icons.notifications_none),
+                      Text(r['frequencia'], style: TextStyle(color: Colors.green)),
+                      SizedBox(height: 4),
+                      Text(r['duracao'], style: TextStyle(fontWeight: FontWeight.bold)),
+                      Icon(Icons.notifications_none),
                     ],
                   )
                 ],
               ),
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             Container(
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(12),
               ),
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text("Número de comprimidos diários"),
+                  Text("Número de comprimidos diários"),
                   Row(
                     children: [
                       IconButton(
@@ -105,11 +105,11 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
                             comprimidos = (comprimidos - 1).clamp(0, 20);
                           });
                         },
-                        icon: const Icon(Icons.remove_circle_outline),
+                        icon: Icon(Icons.remove_circle_outline),
                       ),
                       Text(
                         '$comprimidos',
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: Color.fromARGB(255, 78, 173, 228),
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
@@ -121,23 +121,23 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
                             comprimidos++;
                           });
                         },
-                        icon: const Icon(Icons.add_circle_outline),
+                        icon: Icon(Icons.add_circle_outline),
                       ),
                     ],
                   )
                 ],
               ),
             ),
-            const SizedBox(height: 12),
-            const Text("Horários", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-            const SizedBox(height: 8),
+            SizedBox(height: 12),
+            Text("Horários", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+            SizedBox(height: 8),
             ...List.generate(horarios.length, (i) {
               return GestureDetector(
                 onTap: () => editarHorario(i),
                 child: Container(
-                  decoration: const BoxDecoration(color: Colors.white),
-                  margin: const EdgeInsets.symmetric(vertical: 4),
-                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                  decoration: BoxDecoration(color: Colors.white),
+                  margin: EdgeInsets.symmetric(vertical: 4),
+                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -154,16 +154,16 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
                 ),
               );
             }),
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             Container(
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(12),
               ),
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
+                children: [
                   Text("Mensagem"),
                   Text("Não esqueça\ndo seu remédio!",
                       textAlign: TextAlign.right,
@@ -188,7 +188,7 @@ class TelaInicial extends StatefulWidget {
 class _TelaInicialState extends State<TelaInicial> {
   int _indiceSelecionado = 0;
 
-  void _aoTocar(int index) {
+  void _onTap(int index) {
     setState(() {
       _indiceSelecionado = index;
     });
@@ -251,8 +251,8 @@ class _TelaInicialState extends State<TelaInicial> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Image.asset('assets/images/logo.png', width: 40),
-            const SizedBox(width: 8),
-            const Text(
+            SizedBox(width: 8),
+            Text(
               'RemindMed',
               style: TextStyle(
                 fontSize: 22,
@@ -268,7 +268,7 @@ class _TelaInicialState extends State<TelaInicial> {
         itemBuilder: (context, index) {
           final r = remedios[index];
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
             child: GestureDetector(
               onTap: () {
                 Navigator.push(
@@ -286,12 +286,12 @@ class _TelaInicialState extends State<TelaInicial> {
                     BoxShadow(
                       color: Colors.grey.shade300,
                       blurRadius: 5,
-                      offset: const Offset(0, 2),
+                      offset: Offset(0, 2),
                     )
                   ],
                 ),
                 child: ListTile(
-                  contentPadding: const EdgeInsets.all(12),
+                  contentPadding: EdgeInsets.all(12),
                   leading: CircleAvatar(
                     backgroundColor: r['cor'],
                     radius: 28,
@@ -299,7 +299,7 @@ class _TelaInicialState extends State<TelaInicial> {
                   ),
                   title: Text(
                     r['nome'],
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   subtitle: Text(r['tipo']),
                   trailing: Column(
@@ -308,18 +308,18 @@ class _TelaInicialState extends State<TelaInicial> {
                     children: [
                       Text(
                         r['frequencia'],
-                        style: const TextStyle(color: Colors.green),
+                        style: TextStyle(color: Colors.green),
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4),
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
                             r['duracao'],
-                            style: const TextStyle(fontWeight: FontWeight.bold),
+                            style: TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          const SizedBox(width: 8),
-                          const Icon(Icons.notifications_none, size: 20),
+                          SizedBox(width: 8),
+                          Icon(Icons.notifications_none, size: 20),
                         ],
                       ),
                     ],
@@ -335,7 +335,7 @@ class _TelaInicialState extends State<TelaInicial> {
         child: BottomNavigationBar(
           backgroundColor: Colors.white,
           currentIndex: _indiceSelecionado,
-          onTap: _aoTocar,
+          onTap: _onTap,
           type: BottomNavigationBarType.fixed,
           selectedItemColor: Colors.blue,
           unselectedItemColor: Colors.grey,

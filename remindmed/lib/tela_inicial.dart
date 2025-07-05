@@ -1,49 +1,39 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MyApp());
+class DetalheRemedioPage extends StatefulWidget {
+  final Map<String, dynamic> remedio;
+
+  const DetalheRemedioPage({super.key, required this.remedio});
+
+  @override
+  State<DetalheRemedioPage> createState() => _DetalheRemedioPageState();
 }
 
-enum TipoMedicamento { comprimido, xarope, vacina }
+class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
+  int comprimidos = 3;
+  List<TimeOfDay> horarios = [
+    const TimeOfDay(hour: 8, minute: 30),
+    const TimeOfDay(hour: 16, minute: 30),
+    const TimeOfDay(hour: 0, minute: 30),
+  ];
 
-class Medicamento {
-  String nome;
-  TipoMedicamento tipo;
-  int quantidade;
-  String mensagemLembrete;
-
-  Medicamento({
-    required this.nome,
-    required this.tipo,
-    required this.quantidade,
-    required this.mensagemLembrete,
-  }) {
-    if (tipo == TipoMedicamento.comprimido && quantidade > 5) {
-      this.quantidade = 5;
-    }
+  String formatarHora(TimeOfDay t) {
+    final h = t.hour.toString().padLeft(2, '0');
+    final m = t.minute.toString().padLeft(2, '0');
+    return '$h:$m';
   }
 
-  List<String> gerarLembretes() {
-    if (tipo == TipoMedicamento.comprimido) {
-      return List.generate(
-        quantidade,
-        (index) => 'Comprimido ${index + 1}: $mensagemLembrete',
-      );
-    } else if (tipo == TipoMedicamento.xarope) {
-      return ['Tomar xarope: $mensagemLembrete'];
-    } else if (tipo == TipoMedicamento.vacina) {
-      return List.generate(
-        quantidade,
-        (index) => 'Dose anual ${index + 1}: $mensagemLembrete',
-      );
-    } else {
-      return ['Lembrete: $mensagemLembrete'];
+  Future<void> editarHorario(int index) async {
+    final novo = await showTimePicker(
+      context: context,
+      initialTime: horarios[index],
+    );
+    if (novo != null) {
+      setState(() {
+        horarios[index] = novo;
+      });
     }
   }
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +110,7 @@ class MyApp extends StatelessWidget {
                       Text(
                         '$comprimidos',
                         style: const TextStyle(
-                          color: Colors.red,
+                          color: Color.fromARGB(255, 78, 173, 228),
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
                         ),
@@ -196,18 +186,13 @@ class TelaInicial extends StatefulWidget {
 }
 
 class _TelaInicialState extends State<TelaInicial> {
-  final _formKey = GlobalKey<FormState>();
-  String _nome = '';
-  TipoMedicamento _tipo = TipoMedicamento.comprimido;
-  int _quantidade = 1;
-  String _mensagem = '';
-  List<String> _lembretes = [];
+  int _indiceSelecionado = 0;
 
   void _aoTocar(int index) {
     setState(() {
       _indiceSelecionado = index;
     });
-    // Adicione navegação futura aqui se quiser
+
   }
 
   final List<Map<String, dynamic>> remedios = [
@@ -256,111 +241,110 @@ class _TelaInicialState extends State<TelaInicial> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('RemindMed'),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        shadowColor: Colors.transparent,
         centerTitle: true,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  TextFormField(
-                    decoration: const InputDecoration(
-                      labelText: 'Nome do medicamento',
-                      border: OutlineInputBorder(),
-                    ),
-                    onSaved: (value) => _nome = value!.trim(),
-                    validator: (value) =>
-                        value == null || value.trim().isEmpty
-                            ? 'Informe o nome do medicamento'
-                            : null,
-                  ),
-                  const SizedBox(height: 12),
-                  DropdownButtonFormField<TipoMedicamento>(
-                    decoration: const InputDecoration(
-                      labelText: 'Tipo de medicamento',
-                      border: OutlineInputBorder(),
-                    ),
-                    value: _tipo,
-                    items: TipoMedicamento.values.map((tipo) {
-                      return DropdownMenuItem(
-                        value: tipo,
-                        child: Text(tipo.name[0].toUpperCase() +
-                            tipo.name.substring(1)),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        _tipo = value!;
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 12),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: _getQuantidadeLabel(),
-                      border: const OutlineInputBorder(),
-                    ),
-                    keyboardType: TextInputType.number,
-                    onSaved: (value) =>
-                        _quantidade = int.tryParse(value!) ?? 1,
-                    validator: (value) {
-                      final v = int.tryParse(value ?? '');
-                      if (v == null || v < 1) {
-                        return 'Informe um número válido';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 12),
-                  TextFormField(
-                    decoration: const InputDecoration(
-                      labelText: 'Mensagem do lembrete',
-                      border: OutlineInputBorder(),
-                    ),
-                    onSaved: (value) => _mensagem = value!.trim(),
-                    validator: (value) =>
-                        value == null || value.trim().isEmpty
-                            ? 'Escreva uma mensagem'
-                            : null,
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton.icon(
-                    onPressed: _gerarLembretes,
-                    icon: const Icon(Icons.alarm),
-                    label: const Text('Gerar Lembretes'),
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size(double.infinity, 50),
-                    ),
-                  ),
-                ],
+            Image.asset('assets/images/logo.png', width: 40),
+            const SizedBox(width: 8),
+            const Text(
+              'RemindMed',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Color.fromARGB(255, 78, 173, 228),
               ),
             ),
-            const SizedBox(height: 24),
-            if (_lembretes.isNotEmpty) ...[
-              const Text(
-                'Lembretes gerados:',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ],
+        ),
+      ),
+      body: ListView.builder(
+        itemCount: remedios.length,
+        itemBuilder: (context, index) {
+          final r = remedios[index];
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DetalheRemedioPage(remedio: r),
+                  ),
+                );
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.shade300,
+                      blurRadius: 5,
+                      offset: const Offset(0, 2),
+                    )
+                  ],
+                ),
+                child: ListTile(
+                  contentPadding: const EdgeInsets.all(12),
+                  leading: CircleAvatar(
+                    backgroundColor: r['cor'],
+                    radius: 28,
+                    child: Icon(r['icone'], color: Colors.black, size: 28),
+                  ),
+                  title: Text(
+                    r['nome'],
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: Text(r['tipo']),
+                  trailing: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        r['frequencia'],
+                        style: const TextStyle(color: Colors.green),
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            r['duracao'],
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(width: 8),
+                          const Icon(Icons.notifications_none, size: 20),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
               ),
-              const SizedBox(height: 8),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: _lembretes.length,
-                itemBuilder: (context, index) {
-                  return Card(
-                    child: ListTile(
-                      leading: const Icon(Icons.medication),
-                      title: Text(_lembretes[index]),
-                    ),
-                  );
-                },
-              ),
-            ],
+            ),
+          );
+        },
+      ),
+      bottomNavigationBar: SizedBox(
+        height: 65,
+        child: BottomNavigationBar(
+          backgroundColor: Colors.white,
+          currentIndex: _indiceSelecionado,
+          onTap: _aoTocar,
+          type: BottomNavigationBarType.fixed,
+          selectedItemColor: Colors.blue,
+          unselectedItemColor: Colors.grey,
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
+            BottomNavigationBarItem(icon: Icon(Icons.calendar_today), label: ''),
+            BottomNavigationBarItem(icon: Icon(Icons.add), label: ''),
+            BottomNavigationBarItem(icon: Icon(Icons.place), label: ''),
+            BottomNavigationBarItem(icon: Icon(Icons.inventory_2), label: ''),
           ],
         ),
       ),

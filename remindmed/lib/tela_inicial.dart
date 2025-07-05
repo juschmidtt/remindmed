@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:remindmed/tela_add.dart';
 
 class DetalheRemedioPage extends StatefulWidget {
   final Map<String, dynamic> remedio;
@@ -164,7 +165,7 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text("Mensagem"),
-                  Text("Não esqueça\ndo seu remédio!",
+                  Text("Não esqueça do seu remédio!",
                       textAlign: TextAlign.right,
                       style: TextStyle(fontWeight: FontWeight.bold)),
                 ],
@@ -190,8 +191,19 @@ class _TelaInicialState extends State<TelaInicial> {
   void _onTap(int index) {
     setState(() {
       _indiceSelecionado = index;
+      if (index == 2) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => AdicionarRemedioPage()),
+        ).then((novoRemedio) {
+          if (novoRemedio != null) {
+            setState(() {
+              remedios.add(novoRemedio);
+            });
+          }
+        });
+      }
     });
-
   }
 
   final List<Map<String, dynamic>> remedios = [
@@ -339,11 +351,11 @@ class _TelaInicialState extends State<TelaInicial> {
           selectedItemColor: Colors.blue,
           unselectedItemColor: Colors.grey,
           items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
-            BottomNavigationBarItem(icon: Icon(Icons.calendar_today), label: ''),
-            BottomNavigationBarItem(icon: Icon(Icons.add), label: ''),
-            BottomNavigationBarItem(icon: Icon(Icons.place), label: ''),
-            BottomNavigationBarItem(icon: Icon(Icons.inventory_2), label: ''),
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Início'),
+            BottomNavigationBarItem(icon: Icon(Icons.calendar_today), label: 'Calendário'),
+            BottomNavigationBarItem(icon: Icon(Icons.add), label: 'Adicionar remédio'),
+            BottomNavigationBarItem(icon: Icon(Icons.place), label: 'Farmácias'),
+            BottomNavigationBarItem(icon: Icon(Icons.inventory_2), label: 'Estoque'),
           ],
         ),
       ),

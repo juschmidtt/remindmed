@@ -110,7 +110,7 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
                       Text(
                         '$comprimidos',
                         style: const TextStyle(
-                          color: Colors.red,
+                          color: Color.fromARGB(255, 78, 173, 228),
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
                         ),
@@ -192,7 +192,7 @@ class _TelaInicialState extends State<TelaInicial> {
     setState(() {
       _indiceSelecionado = index;
     });
-    // Adicione navegação futura aqui se quiser
+
   }
 
   final List<Map<String, dynamic>> remedios = [

@@ -19,8 +19,8 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
 
 
   String formatarHora(TimeOfDay t) {
-    final h = t.hour.toString().padLeft(2, '0');
-    final m = t.minute.toString().padLeft(2, '0');
+    final h = t.hour.toString();
+    final m = t.minute.toString();
     return '$h:$m';
   }
 
@@ -49,7 +49,6 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
       body: Padding(
         padding: EdgeInsets.all(16),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Container(
               decoration: BoxDecoration(

@@ -19,10 +19,10 @@ class _AdicionarRemedioPageState extends State<AdicionarRemedioPage> {
 
   final List<IconData> iconesSintomas = [
     Icons.headphones, // dor de cabeça
-    Icons.face,       // enjoo
-    Icons.sick,       // dor de barriga
-    Icons.coronavirus, // sintomas respiratórios
-    Icons.heat_pump,  // febre
+    Icons.face, // enjoo
+    Icons.sick, // dor de barriga
+    Icons.coronavirus, // respiratórios
+    Icons.heat_pump, // febre
     Icons.medical_services, // dor de dente
     Icons.emergency, // dor abdominal
     Icons.all_inclusive, // tosse
@@ -38,7 +38,7 @@ class _AdicionarRemedioPageState extends State<AdicionarRemedioPage> {
       'cor': Colors.lightBlueAccent,
       'icone': Icons.medication,
     };
-    Navigator.pop(context, remedio); // devolve o remédio para quem chamou
+    Navigator.pop(context, remedio);
   }
 
   @override
@@ -46,25 +46,25 @@ class _AdicionarRemedioPageState extends State<AdicionarRemedioPage> {
     return Scaffold(
       backgroundColor: const Color(0xFFF2F2F2),
       appBar: AppBar(
-        title: const Text('Adicionar novo Remédio', style: TextStyle(color: Colors.black)),
+        title: Text('Adicionar novo Remédio', style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
-        iconTheme: const IconThemeData(color: Colors.black),
+        iconTheme: IconThemeData(color: Colors.black),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16),
         child: ListView(
           children: [
             TextField(
               controller: nomeController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Nome do remédio',
                 border: OutlineInputBorder(),
               ),
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             DropdownButtonFormField<String>(
               value: tipoSelecionado,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Tipo de remédio',
                 border: OutlineInputBorder(),
               ),
@@ -77,22 +77,21 @@ class _AdicionarRemedioPageState extends State<AdicionarRemedioPage> {
                 });
               },
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             TextField(
               controller: comprimidosController,
               keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Quantidade de comprimidos',
                 border: OutlineInputBorder(),
               ),
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             Row(
               children: [
-                const Text('Quantidade de dias:'),
-                const Spacer(),
+                Text('Quantidade de dias:'),
                 IconButton(
-                  icon: const Icon(Icons.remove_circle_outline),
+                  icon: Icon(Icons.remove_circle_outline),
                   onPressed: () {
                     setState(() {
                       quantidadeDias = (quantidadeDias - 1).clamp(1, 365);
@@ -101,7 +100,7 @@ class _AdicionarRemedioPageState extends State<AdicionarRemedioPage> {
                 ),
                 Text('$quantidadeDias'),
                 IconButton(
-                  icon: const Icon(Icons.add_circle_outline),
+                  icon: Icon(Icons.add_circle_outline),
                   onPressed: () {
                     setState(() {
                       quantidadeDias++;
@@ -110,13 +109,12 @@ class _AdicionarRemedioPageState extends State<AdicionarRemedioPage> {
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             Row(
               children: [
-                const Text('Quantidade de vezes ao dia:'),
-                const Spacer(),
+                Text('Quantidade de vezes ao dia:'),
                 IconButton(
-                  icon: const Icon(Icons.remove_circle_outline),
+                  icon: Icon(Icons.remove_circle_outline),
                   onPressed: () {
                     setState(() {
                       vezesAoDia = (vezesAoDia - 1).clamp(1, 24);
@@ -125,7 +123,7 @@ class _AdicionarRemedioPageState extends State<AdicionarRemedioPage> {
                 ),
                 Text('$vezesAoDia'),
                 IconButton(
-                  icon: const Icon(Icons.add_circle_outline),
+                  icon: Icon(Icons.add_circle_outline),
                   onPressed: () {
                     setState(() {
                       vezesAoDia++;
@@ -134,9 +132,9 @@ class _AdicionarRemedioPageState extends State<AdicionarRemedioPage> {
                 ),
               ],
             ),
-            const SizedBox(height: 12),
-            const Text('Sintomas que está tratando:'),
-            const SizedBox(height: 8),
+            SizedBox(height: 12),
+            Text('Sintomas que está tratando:'),
+            SizedBox(height: 8),
             Wrap(
               spacing: 12,
               runSpacing: 12,
@@ -157,7 +155,7 @@ class _AdicionarRemedioPageState extends State<AdicionarRemedioPage> {
                         width: 2,
                       ),
                     ),
-                    padding: const EdgeInsets.all(12),
+                    padding: EdgeInsets.all(12),
                     child: Icon(
                       iconesSintomas[index],
                       size: 30,
@@ -169,13 +167,13 @@ class _AdicionarRemedioPageState extends State<AdicionarRemedioPage> {
                 );
               }),
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: 24),
             ElevatedButton(
               onPressed: salvarRemedio,
-              child: const Text('Salvar Remédio'),
+              child: Text('Salvar Remédio'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
-                padding: const EdgeInsets.symmetric(vertical: 16),
+                padding: EdgeInsets.symmetric(vertical: 16),
               ),
             )
           ],

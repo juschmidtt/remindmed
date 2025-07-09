@@ -18,15 +18,15 @@ class _AdicionarRemedioPageState extends State<AdicionarRemedioPage> {
   int sintomaSelecionado = -1;
 
   final List<IconData> iconesSintomas = [
-    Icons.headphones, // dor de cabeça
-    Icons.face, // enjoo
-    Icons.sick, // dor de barriga
-    Icons.coronavirus, // respiratórios
-    Icons.heat_pump, // febre
-    Icons.medical_services, // dor de dente
-    Icons.emergency, // dor abdominal
-    Icons.all_inclusive, // tosse
-    Icons.help_outline, // outro
+    Icons.heart_broken, // dor de cabeça
+    Icons.heart_broken, // enjoo
+    Icons.heart_broken, // dor de barriga
+    Icons.heart_broken, // respiratórios
+    Icons.heart_broken, // febre
+    Icons.heart_broken, // dor de dente
+    Icons.heart_broken, // dor abdominal
+    Icons.heart_broken, // tosse
+    Icons.heart_broken, // outro
   ];
 
   void salvarRemedio() {

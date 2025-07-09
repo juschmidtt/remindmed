@@ -38,6 +38,7 @@ dependencies:
   url_launcher: ^6.2.4
   geolocator: ^10.1.0
   permission_handler: ^11.2.0
+  flutter_health_icons: ^0.1.5
 
 
   # The following adds the Cupertino Icons font to your application.

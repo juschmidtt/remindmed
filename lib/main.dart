@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'tela_inicial.dart';
+import 'screens/tela_inicial.dart';
 
 void main() {
   runApp(const MyApp());

@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\julia\OneDrive\Documentos\GitHub\remindmed\build\windows\x64\_deps\nuget-subbuild\CMakeFiles\8188b0c12f1b3db115b828315ec721fc\nuget-populate-mkdir.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\julia\OneDrive\Documentos\GitHub\remindmed\build\windows\x64\_deps\nuget-subbuild\CMakeFiles\8188b0c12f1b3db115b828315ec721fc\nuget-populate-download.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\julia\OneDrive\Documentos\GitHub\remindmed\build\windows\x64\_deps\nuget-subbuild\CMakeFiles\8188b0c12f1b3db115b828315ec721fc\nuget-populate-update.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\julia\OneDrive\Documentos\GitHub\remindmed\build\windows\x64\_deps\nuget-subbuild\CMakeFiles\8188b0c12f1b3db115b828315ec721fc\nuget-populate-patch.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\julia\OneDrive\Documentos\GitHub\remindmed\build\windows\x64\_deps\nuget-subbuild\CMakeFiles\8188b0c12f1b3db115b828315ec721fc\nuget-populate-copyfile.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\julia\OneDrive\Documentos\GitHub\remindmed\build\windows\x64\_deps\nuget-subbuild\CMakeFiles\8188b0c12f1b3db115b828315ec721fc\nuget-populate-configure.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\julia\OneDrive\Documentos\GitHub\remindmed\build\windows\x64\_deps\nuget-subbuild\CMakeFiles\8188b0c12f1b3db115b828315ec721fc\nuget-populate-build.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\julia\OneDrive\Documentos\GitHub\remindmed\build\windows\x64\_deps\nuget-subbuild\CMakeFiles\8188b0c12f1b3db115b828315ec721fc\nuget-populate-install.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\julia\OneDrive\Documentos\GitHub\remindmed\build\windows\x64\_deps\nuget-subbuild\CMakeFiles\8188b0c12f1b3db115b828315ec721fc\nuget-populate-test.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\julia\OneDrive\Documentos\GitHub\remindmed\build\windows\x64\_deps\nuget-subbuild\CMakeFiles\1577a4559deb3c4aed3e59e248624cdc\nuget-populate-complete.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\julia\OneDrive\Documentos\GitHub\remindmed\build\windows\x64\_deps\nuget-subbuild\CMakeFiles\5c74e4429dab5fcad153511f691dddb4\nuget-populate.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\julia\OneDrive\Documentos\GitHub\remindmed\build\windows\x64\_deps\nuget-subbuild\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\julia\OneDrive\Documentos\GitHub\remindmed\build\windows\x64\_deps\nuget-subbuild\CMakeFiles\nuget-populate" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{36F0688D-63FA-39E3-9482-A7FA463007E3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

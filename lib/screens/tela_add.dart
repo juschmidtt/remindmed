@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 class AdicionarRemedioPage extends StatefulWidget {
   const AdicionarRemedioPage({super.key});
 
@@ -11,11 +10,10 @@ class AdicionarRemedioPage extends StatefulWidget {
 class _AdicionarRemedioPageState extends State<AdicionarRemedioPage> {
   final TextEditingController nomeController = TextEditingController();
   final TextEditingController comprimidosController = TextEditingController();
-  final List<String> tipos = ['comprimido', 'xarope', 'gotas', 'injeção', 'vacina'];
+  final List<String> tipos = ['comprimido', 'xarope', 'gotas', 'vacina'];
   String tipoSelecionado = 'comprimido';
   int quantidadeDias = 1;
   int vezesAoDia = 1;
-
   int sintomaSelecionado = -1;
 
   final List<IconData> iconesSintomas = [
@@ -30,15 +28,48 @@ class _AdicionarRemedioPageState extends State<AdicionarRemedioPage> {
     Icons.help_outline, // outro
   ];
 
+  Map<String, dynamic> getCorEIconePorTipo(String tipo) {
+    switch (tipo) {
+      case 'comprimido':
+        return {
+          'cor': const Color.fromARGB(255, 66, 205, 244),
+          'icone': Icons.medication,
+        };
+      case 'vacina':
+        return {
+          'cor': Colors.greenAccent,
+          'icone': Icons.vaccines,
+        };
+      case 'gotas':
+        return {
+          'cor': const Color.fromARGB(255, 215, 61, 141),
+          'icone': Icons.opacity,
+        };
+      case 'xarope':
+        return {
+          'cor': Colors.purpleAccent,
+          'icone': Icons.local_drink,
+        };
+      default:
+        return {
+          'cor': Colors.lightBlueAccent,
+          'icone': Icons.medication,
+        };
+    }
+  }
+
   void salvarRemedio() {
+    final tipoInfo = getCorEIconePorTipo(tipoSelecionado);
+
     final remedio = {
       'nome': nomeController.text,
       'tipo': tipoSelecionado,
       'frequencia': '$vezesAoDia vezes ao dia',
       'duracao': '$quantidadeDias dias',
-      'cor': Colors.lightBlueAccent,
-      'icone': Icons.medication,
+      'cor': tipoInfo['cor'],
+      'icone': tipoInfo['icone'],
     };
+
     Navigator.pop(context, remedio);
   }
 
@@ -47,25 +78,28 @@ class _AdicionarRemedioPageState extends State<AdicionarRemedioPage> {
     return Scaffold(
       backgroundColor: const Color(0xFFF2F2F2),
       appBar: AppBar(
-        title: Text('Adicionar novo Remédio', style: TextStyle(color: Colors.black)),
+        title: const Text(
+          'Adicionar novo Remédio',
+          style: TextStyle(color: Colors.black),
+        ),
         backgroundColor: Colors.white,
-        iconTheme: IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: ListView(
           children: [
             TextField(
               controller: nomeController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Nome do remédio',
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
             DropdownButtonFormField<String>(
               value: tipoSelecionado,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Tipo de remédio',
                 border: OutlineInputBorder(),
               ),
@@ -78,21 +112,21 @@ class _AdicionarRemedioPageState extends State<AdicionarRemedioPage> {
                 });
               },
             ),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
             TextField(
               controller: comprimidosController,
               keyboardType: TextInputType.number,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Quantidade de doses',
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
             Row(
               children: [
-                Text('Quantidade de dias:'),
+                const Text('Quantidade de dias:'),
                 IconButton(
-                  icon: Icon(Icons.remove_circle_outline),
+                  icon: const Icon(Icons.remove_circle_outline),
                   onPressed: () {
                     setState(() {
                       quantidadeDias = (quantidadeDias - 1).clamp(1, 365);
@@ -101,7 +135,7 @@ class _AdicionarRemedioPageState extends State<AdicionarRemedioPage> {
                 ),
                 Text('$quantidadeDias'),
                 IconButton(
-                  icon: Icon(Icons.add_circle_outline),
+                  icon: const Icon(Icons.add_circle_outline),
                   onPressed: () {
                     setState(() {
                       quantidadeDias++;
@@ -110,12 +144,12 @@ class _AdicionarRemedioPageState extends State<AdicionarRemedioPage> {
                 ),
               ],
             ),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
             Row(
               children: [
-                Text('Quantidade de vezes ao dia:'),
+                const Text('Quantidade de vezes ao dia:'),
                 IconButton(
-                  icon: Icon(Icons.remove_circle_outline),
+                  icon: const Icon(Icons.remove_circle_outline),
                   onPressed: () {
                     setState(() {
                       vezesAoDia = (vezesAoDia - 1).clamp(1, 24);
@@ -124,7 +158,7 @@ class _AdicionarRemedioPageState extends State<AdicionarRemedioPage> {
                 ),
                 Text('$vezesAoDia'),
                 IconButton(
-                  icon: Icon(Icons.add_circle_outline),
+                  icon: const Icon(Icons.add_circle_outline),
                   onPressed: () {
                     setState(() {
                       vezesAoDia++;
@@ -133,9 +167,9 @@ class _AdicionarRemedioPageState extends State<AdicionarRemedioPage> {
                 ),
               ],
             ),
-            SizedBox(height: 12),
-            Text('Sintomas que está tratando:'),
-            SizedBox(height: 8),
+            const SizedBox(height: 12),
+            const Text('Sintomas que está tratando:'),
+            const SizedBox(height: 8),
             Wrap(
               spacing: 12,
               runSpacing: 12,
@@ -156,7 +190,7 @@ class _AdicionarRemedioPageState extends State<AdicionarRemedioPage> {
                         width: 2,
                       ),
                     ),
-                    padding: EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(12),
                     child: Icon(
                       iconesSintomas[index],
                       size: 30,
@@ -168,14 +202,14 @@ class _AdicionarRemedioPageState extends State<AdicionarRemedioPage> {
                 );
               }),
             ),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             ElevatedButton(
               onPressed: salvarRemedio,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
-                padding: EdgeInsets.symmetric(vertical: 16),
+                padding: const EdgeInsets.symmetric(vertical: 16),
               ),
-              child: Text('Salvar Remédio'),
+              child: const Text('Salvar Remédio'),
             )
           ],
         ),

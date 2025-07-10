@@ -36,8 +36,8 @@ class _TelaCalendarioState extends State<TelaCalendario> {
         TableCalendar(
           locale: 'pt_BR',
           focusedDay: _focado,
-          firstDay: DateTime.utc(2020, 1, 1),
-          lastDay: DateTime.utc(2030, 12, 31),
+          firstDay: DateTime.utc(2025, 1, 1),
+          lastDay: DateTime.utc(2100, 12, 31),
           selectedDayPredicate: (day) => isSameDay(day, _diaSelecionado),
           onDaySelected: (selected, focused) {
             setState(() {

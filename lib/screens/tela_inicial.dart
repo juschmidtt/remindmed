@@ -1,5 +1,7 @@
+
 import 'package:flutter/material.dart';
 import 'package:remindmed/screens/tela_add.dart';
+import 'package:remindmed/tela_calendario.dart';
 
 class DetalheRemedioPage extends StatefulWidget {
   final Map<String, dynamic> remedio;
@@ -17,7 +19,6 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
     TimeOfDay(hour: 16, minute: 30),
     TimeOfDay(hour: 0, minute: 30),
   ];
-
 
   String formatarHora(TimeOfDay t) {
     final h = t.hour.toString();
@@ -145,7 +146,6 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
                       Text(
                         formatarHora(horarios[i]),
                         style: TextStyle(
-                        
                           fontWeight: FontWeight.bold,
                         ),
                       )
@@ -188,6 +188,36 @@ class TelaInicial extends StatefulWidget {
 class _TelaInicialState extends State<TelaInicial> {
   int _indiceSelecionado = 0;
 
+  final List<Map<String, dynamic>> remedios = [
+    {
+      'nome': 'Seki',
+      'tipo': 'Xarope',
+      'frequencia': '2 vezes ao dia',
+      'duracao': '3 dias',
+      'cor': Colors.purpleAccent,
+      'icone': Icons.local_drink,
+      'inicio': DateTime(2025, 2, 9),
+    },
+    {
+      'nome': 'Vacina para gripe',
+      'tipo': 'Vacina',
+      'frequencia': '1 vez ao dia',
+      'duracao': '1 dia',
+      'cor': Colors.greenAccent,
+      'icone': Icons.vaccines,
+      'inicio': DateTime(2025, 2, 26),
+    },
+    {
+      'nome': 'Anticoncepcional',
+      'tipo': 'Comprimido',
+      'frequencia': '1 vez ao dia',
+      'duracao': '28 dias',
+      'cor':  Color.fromARGB(255, 66, 205, 244),
+      'icone': Icons.medication,
+      'inicio': DateTime(2025, 2, 10),
+    },
+  ];
+
   void _onTap(int index) {
     setState(() {
       _indiceSelecionado = index;
@@ -198,56 +228,13 @@ class _TelaInicialState extends State<TelaInicial> {
         ).then((novoRemedio) {
           if (novoRemedio != null) {
             setState(() {
-              remedios.add(novoRemedio);
+              remedios.add({...novoRemedio, 'inicio': DateTime.now()});
             });
           }
         });
       }
     });
   }
-
-  final List<Map<String, dynamic>> remedios = [
-    {
-      'nome': 'Seki',
-      'tipo': 'Xarope',
-      'frequencia': '2 vezes ao dia',
-      'duracao': '7 dias',
-      'cor': Colors.lightBlueAccent,
-      'icone': Icons.local_pharmacy,
-    },
-    {
-      'nome': 'Decongex Pus',
-      'tipo': 'Remédio em gotas',
-      'frequencia': '3 vezes ao dia',
-      'duracao': '5 dias',
-      'cor': Colors.purpleAccent,
-      'icone': Icons.medication_liquid,
-    },
-    {
-      'nome': 'Amoxicilina',
-      'tipo': 'Comprimido',
-      'frequencia': '3 vezes ao dia',
-      'duracao': '5 dias',
-      'cor': Colors.cyanAccent,
-      'icone': Icons.medication,
-    },
-    {
-      'nome': 'Vacina para gripe',
-      'tipo': 'Vacina',
-      'frequencia': '1 vez ao dia',
-      'duracao': '1 dia',
-      'cor': Colors.redAccent,
-      'icone': Icons.vaccines,
-    },
-    {
-      'nome': 'Anticoncepcional',
-      'tipo': 'Comprimido',
-      'frequencia': '1 vez ao dia',
-      'duracao': '28 dias',
-      'cor': Colors.pinkAccent,
-      'icone': Icons.medication_outlined,
-    },
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -262,8 +249,8 @@ class _TelaInicialState extends State<TelaInicial> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Image.asset('assets/images/logo.png', width: 40),
-            SizedBox(width: 8),
-            Text(
+            const SizedBox(width: 8),
+            const Text(
               'RemindMed',
               style: TextStyle(
                 fontSize: 22,
@@ -274,90 +261,92 @@ class _TelaInicialState extends State<TelaInicial> {
           ],
         ),
       ),
-      body: ListView.builder(
-        itemCount: remedios.length,
-        itemBuilder: (context, index) {
-          final r = remedios[index];
-          return Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => DetalheRemedioPage(remedio: r),
+      body: _indiceSelecionado == 1
+          ? Padding(
+              padding: const EdgeInsets.all(16),
+              child: TelaCalendario(remedios: remedios),
+            )
+          : ListView.builder(
+              itemCount: remedios.length,
+              itemBuilder: (context, index) {
+                final r = remedios[index];
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DetalheRemedioPage(remedio: r),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.shade300,
+                            blurRadius: 5,
+                            offset: const Offset(0, 2),
+                          )
+                        ],
+                      ),
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.all(12),
+                        leading: CircleAvatar(
+                          backgroundColor: r['cor'],
+                          radius: 28,
+                          child: Icon(r['icone'], color: Colors.black, size: 28),
+                        ),
+                        title: Text(
+                          r['nome'],
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Text(r['tipo']),
+                        trailing: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              r['frequencia'],
+                              style: const TextStyle(color: Colors.green),
+                            ),
+                            const SizedBox(height: 4),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  r['duracao'],
+                                  style: const TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(width: 8),
+                                const Icon(Icons.notifications_none, size: 20),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
                 );
               },
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.shade300,
-                      blurRadius: 5,
-                      offset: Offset(0, 2),
-                    )
-                  ],
-                ),
-                child: ListTile(
-                  contentPadding: EdgeInsets.all(12),
-                  leading: CircleAvatar(
-                    backgroundColor: r['cor'],
-                    radius: 28,
-                    child: Icon(r['icone'], color: Colors.black, size: 28),
-                  ),
-                  title: Text(
-                    r['nome'],
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  subtitle: Text(r['tipo']),
-                  trailing: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        r['frequencia'],
-                        style: TextStyle(color: Colors.green),
-                      ),
-                      SizedBox(height: 4),
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            r['duracao'],
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(width: 8),
-                          Icon(Icons.notifications_none, size: 20),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
             ),
-          );
-        },
-      ),
-      bottomNavigationBar: SizedBox(
-        height: 65,
-        child: BottomNavigationBar(
-          backgroundColor: Colors.white,
-          currentIndex: _indiceSelecionado,
-          onTap: _onTap,
-          type: BottomNavigationBarType.fixed,
-          selectedItemColor: Colors.blue,
-          unselectedItemColor: Colors.grey,
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Início'),
-            BottomNavigationBarItem(icon: Icon(Icons.calendar_today), label: 'Calendário'),
-            BottomNavigationBarItem(icon: Icon(Icons.add), label: 'Adicionar remédio'),
-            BottomNavigationBarItem(icon: Icon(Icons.place), label: 'Farmácias'),
-            BottomNavigationBarItem(icon: Icon(Icons.inventory_2), label: 'Estoque'),
-          ],
-        ),
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.white,
+        currentIndex: _indiceSelecionado,
+        onTap: _onTap,
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: Colors.blue,
+        unselectedItemColor: Colors.grey,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Início'),
+          BottomNavigationBarItem(icon: Icon(Icons.calendar_today), label: 'Calendário'),
+          BottomNavigationBarItem(icon: Icon(Icons.add), label: 'Adicionar remédio'),
+          BottomNavigationBarItem(icon: Icon(Icons.place), label: 'Farmácias'),
+          BottomNavigationBarItem(icon: Icon(Icons.inventory_2), label: 'Estoque'),
+        ],
       ),
     );
   }

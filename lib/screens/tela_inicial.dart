@@ -1,12 +1,15 @@
-
 import 'package:flutter/material.dart';
 import 'package:remindmed/screens/tela_add.dart';
 import 'package:remindmed/tela_calendario.dart';
+import 'dart:async';
 
 class DetalheRemedioPage extends StatefulWidget {
   final Map<String, dynamic> remedio;
 
-  const DetalheRemedioPage({super.key, required this.remedio});
+  const DetalheRemedioPage({
+    super.key,
+    required this.remedio,
+  });
 
   @override
   State<DetalheRemedioPage> createState() => _DetalheRemedioPageState();
@@ -20,9 +23,28 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
     TimeOfDay(hour: 0, minute: 30),
   ];
 
+  late TextEditingController mensagemController;
+
+  @override
+  void initState() {
+    super.initState();
+    final mensagemInicial = widget.remedio['mensagem'] ?? "Não esqueça do seu remédio!";
+    mensagemController = TextEditingController(text: mensagemInicial);
+
+    mensagemController.addListener(() {
+      widget.remedio['mensagem'] = mensagemController.text;
+    });
+  }
+
+  @override
+  void dispose() {
+    mensagemController.dispose();
+    super.dispose();
+  }
+
   String formatarHora(TimeOfDay t) {
-    final h = t.hour.toString();
-    final m = t.minute.toString();
+    final h = t.hour.toString().padLeft(2, '0');
+    final m = t.minute.toString().padLeft(2, '0');
     return '$h:$m';
   }
 
@@ -38,6 +60,30 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
     }
   }
 
+  Future<void> confirmarExclusao() async {
+    final confirmado = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Excluir Remédio'),
+        content: const Text('Tem certeza que deseja excluir este remédio?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Excluir', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmado == true) {
+      Navigator.pop(context, true); // Retorna "true" para indicar exclusão
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final r = widget.remedio;
@@ -46,10 +92,17 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
       backgroundColor: const Color(0xFFF2F2F2),
       appBar: AppBar(
         backgroundColor: Colors.white,
-        iconTheme: IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: Colors.black),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.delete, color: Colors.red),
+            onPressed: confirmarExclusao,
+            tooltip: 'Excluir remédio',
+          ),
+        ],
       ),
       body: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             Container(
@@ -57,7 +110,7 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(16),
               ),
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               child: Row(
                 children: [
                   CircleAvatar(
@@ -65,12 +118,13 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
                     radius: 28,
                     child: Icon(r['icone'], color: Colors.black, size: 28),
                   ),
-                  SizedBox(width: 12),
+                  const SizedBox(width: 12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(r['nome'], style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                        Text(r['nome'],
+                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                         Text(r['tipo']),
                       ],
                     ),
@@ -78,26 +132,26 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Text(r['frequencia'], style: TextStyle(color: Colors.green)),
-                      SizedBox(height: 4),
-                      Text(r['duracao'], style: TextStyle(fontWeight: FontWeight.bold)),
-                      Icon(Icons.notifications_none),
+                      Text(r['frequencia'], style: const TextStyle(color: Colors.green)),
+                      const SizedBox(height: 4),
+                      Text(r['duracao'], style: const TextStyle(fontWeight: FontWeight.bold)),
+                      const Icon(Icons.notifications_none),
                     ],
                   )
                 ],
               ),
             ),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
             Container(
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(12),
               ),
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("Número de doses diárias"),
+                  const Text("Número de doses diárias"),
                   Row(
                     children: [
                       IconButton(
@@ -106,11 +160,11 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
                             comprimidos = (comprimidos - 1).clamp(0, 20);
                           });
                         },
-                        icon: Icon(Icons.remove_circle_outline),
+                        icon: const Icon(Icons.remove_circle_outline),
                       ),
                       Text(
                         '$comprimidos',
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Color.fromARGB(255, 78, 173, 228),
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
@@ -122,30 +176,31 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
                             comprimidos++;
                           });
                         },
-                        icon: Icon(Icons.add_circle_outline),
+                        icon: const Icon(Icons.add_circle_outline),
                       ),
                     ],
                   )
                 ],
               ),
             ),
-            SizedBox(height: 12),
-            Text("Horários", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-            SizedBox(height: 8),
+            const SizedBox(height: 12),
+            const Text("Horários",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+            const SizedBox(height: 8),
             ...List.generate(horarios.length, (i) {
               return GestureDetector(
                 onTap: () => editarHorario(i),
                 child: Container(
-                  decoration: BoxDecoration(color: Colors.white),
-                  margin: EdgeInsets.symmetric(vertical: 4),
-                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                  decoration: const BoxDecoration(color: Colors.white),
+                  margin: const EdgeInsets.symmetric(vertical: 4),
+                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text("Lembrete ${i + 1}"),
                       Text(
                         formatarHora(horarios[i]),
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontWeight: FontWeight.bold,
                         ),
                       )
@@ -154,20 +209,30 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
                 ),
               );
             }),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
             Container(
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(12),
               ),
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("Mensagem"),
-                  Text("Não esqueça do seu remédio!",
+                  const Text("Mensagem"),
+                  Expanded(
+                    child: TextField(
+                      controller: mensagemController,
                       textAlign: TextAlign.right,
-                      style: TextStyle(fontWeight: FontWeight.bold)),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        isDense: true,
+                        contentPadding: EdgeInsets.zero,
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -187,6 +252,8 @@ class TelaInicial extends StatefulWidget {
 
 class _TelaInicialState extends State<TelaInicial> {
   int _indiceSelecionado = 0;
+  String _horaAtual = '';
+  late Timer _timer;
 
   final List<Map<String, dynamic>> remedios = [
     {
@@ -212,11 +279,32 @@ class _TelaInicialState extends State<TelaInicial> {
       'tipo': 'Comprimido',
       'frequencia': '1 vez ao dia',
       'duracao': '28 dias',
-      'cor':  Color.fromARGB(255, 66, 205, 244),
+      'cor': const Color.fromARGB(255, 66, 205, 244),
       'icone': Icons.medication,
       'inicio': DateTime(2025, 2, 10),
     },
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _atualizarHora();
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) => _atualizarHora());
+  }
+
+  void _atualizarHora() {
+    final agora = DateTime.now();
+    setState(() {
+      _horaAtual =
+          '${agora.hour.toString().padLeft(2, '0')}:${agora.minute.toString().padLeft(2, '0')}';
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
 
   void _onTap(int index) {
     setState(() {
@@ -224,7 +312,7 @@ class _TelaInicialState extends State<TelaInicial> {
       if (index == 2) {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => AdicionarRemedioPage()),
+          MaterialPageRoute(builder: (context) => const AdicionarRemedioPage()),
         ).then((novoRemedio) {
           if (novoRemedio != null) {
             setState(() {
@@ -266,72 +354,85 @@ class _TelaInicialState extends State<TelaInicial> {
               padding: const EdgeInsets.all(16),
               child: TelaCalendario(remedios: remedios),
             )
-          : ListView.builder(
-              itemCount: remedios.length,
-              itemBuilder: (context, index) {
-                final r = remedios[index];
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => DetalheRemedioPage(remedio: r),
+          : Column(
+              children: [
+                const SizedBox(height: 12),
+                const SizedBox(height: 12),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: remedios.length,
+                    itemBuilder: (context, index) {
+                      final r = remedios[index];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                        child: GestureDetector(
+                          onTap: () async {
+                            final excluido = await Navigator.push<bool>(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DetalheRemedioPage(remedio: r),
+                              ),
+                            );
+                            if (excluido == true) {
+                              setState(() {
+                                remedios.removeAt(index);
+                              });
+                            }
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.shade300,
+                                  blurRadius: 5,
+                                  offset: const Offset(0, 2),
+                                )
+                              ],
+                            ),
+                            child: ListTile(
+                              contentPadding: const EdgeInsets.all(12),
+                              leading: CircleAvatar(
+                                backgroundColor: r['cor'],
+                                radius: 28,
+                                child: Icon(r['icone'], color: Colors.black, size: 28),
+                              ),
+                              title: Text(
+                                r['nome'],
+                                style: const TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              subtitle: Text(r['tipo']),
+                              trailing: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    r['frequencia'],
+                                    style: const TextStyle(color: Colors.green),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        r['duracao'],
+                                        style: const TextStyle(fontWeight: FontWeight.bold),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      const Icon(Icons.notifications_none, size: 20),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
                       );
                     },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.shade300,
-                            blurRadius: 5,
-                            offset: const Offset(0, 2),
-                          )
-                        ],
-                      ),
-                      child: ListTile(
-                        contentPadding: const EdgeInsets.all(12),
-                        leading: CircleAvatar(
-                          backgroundColor: r['cor'],
-                          radius: 28,
-                          child: Icon(r['icone'], color: Colors.black, size: 28),
-                        ),
-                        title: Text(
-                          r['nome'],
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        subtitle: Text(r['tipo']),
-                        trailing: Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              r['frequencia'],
-                              style: const TextStyle(color: Colors.green),
-                            ),
-                            const SizedBox(height: 4),
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  r['duracao'],
-                                  style: const TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                const SizedBox(width: 8),
-                                const Icon(Icons.notifications_none, size: 20),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
                   ),
-                );
-              },
+                ),
+              ],
             ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white,

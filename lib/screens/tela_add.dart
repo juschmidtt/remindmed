@@ -10,8 +10,13 @@ class AdicionarRemedioPage extends StatefulWidget {
 class _AdicionarRemedioPageState extends State<AdicionarRemedioPage> {
   final TextEditingController nomeController = TextEditingController();
   final TextEditingController comprimidosController = TextEditingController();
+
   final List<String> tipos = ['comprimido', 'xarope', 'gotas', 'vacina'];
   String tipoSelecionado = 'comprimido';
+
+  final List<String> recorrencias = ['Diário', 'Semanal', 'Mensal', 'Anual'];
+  String recorrenciaSelecionada = 'Diário';
+
   int quantidadeDias = 1;
   int vezesAoDia = 1;
   int sintomaSelecionado = -1;
@@ -65,9 +70,11 @@ class _AdicionarRemedioPageState extends State<AdicionarRemedioPage> {
       'nome': nomeController.text,
       'tipo': tipoSelecionado,
       'frequencia': '$vezesAoDia vezes ao dia',
+      'recorrencia': recorrenciaSelecionada, // nova info
       'duracao': '$quantidadeDias dias',
       'cor': tipoInfo['cor'],
       'icone': tipoInfo['icone'],
+      'sintoma': sintomaSelecionado >= 0 ? iconesSintomas[sintomaSelecionado] : null,
     };
 
     Navigator.pop(context, remedio);
@@ -109,6 +116,26 @@ class _AdicionarRemedioPageState extends State<AdicionarRemedioPage> {
               onChanged: (value) {
                 setState(() {
                   tipoSelecionado = value!;
+                });
+              },
+            ),
+            const SizedBox(height: 12),
+            // NOVO: Dropdown para Recorrência
+            DropdownButtonFormField<String>(
+              value: recorrenciaSelecionada,
+              decoration: const InputDecoration(
+                labelText: 'Recorrência',
+                border: OutlineInputBorder(),
+              ),
+              items: recorrencias.map((recorrencia) {
+                return DropdownMenuItem(
+                  value: recorrencia,
+                  child: Text(recorrencia),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  recorrenciaSelecionada = value!;
                 });
               },
             ),

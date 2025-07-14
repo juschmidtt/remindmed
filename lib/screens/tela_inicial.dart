@@ -1,28 +1,53 @@
-
+// lib/screens/tela_inicial.dart
 import 'package:flutter/material.dart';
 import 'package:remindmed/screens/tela_add.dart';
 import 'package:remindmed/tela_calendario.dart';
+import 'dart:async';
+import '../models/remedio.dart'; 
+import '../database/database.dart';
 
 class DetalheRemedioPage extends StatefulWidget {
-  final Map<String, dynamic> remedio;
+  final Remedio remedio; 
 
-  const DetalheRemedioPage({super.key, required this.remedio});
+  DetalheRemedioPage({
+    super.key,
+    required this.remedio,
+  });
 
   @override
   State<DetalheRemedioPage> createState() => _DetalheRemedioPageState();
 }
 
 class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
-  int comprimidos = 3;
+  late int comprimidos;
   List<TimeOfDay> horarios = [
     TimeOfDay(hour: 8, minute: 30),
     TimeOfDay(hour: 16, minute: 30),
     TimeOfDay(hour: 0, minute: 30),
   ];
 
+  late TextEditingController mensagemController;
+
+  @override
+  void initState() {
+    super.initState();
+    comprimidos = widget.remedio.dosesDiarias;
+    mensagemController = TextEditingController(text: widget.remedio.mensagem);
+
+    mensagemController.addListener(() {
+      widget.remedio.mensagem = mensagemController.text;
+    });
+  }
+
+  @override
+  void dispose() {
+    mensagemController.dispose();
+    super.dispose();
+  }
+
   String formatarHora(TimeOfDay t) {
-    final h = t.hour.toString();
-    final m = t.minute.toString();
+    final h = t.hour.toString().padLeft(2, '0');
+    final m = t.minute.toString().padLeft(2, '0');
     return '$h:$m';
   }
 
@@ -38,6 +63,45 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
     }
   }
 
+  Future<void> confirmarExclusao() async {
+    final confirmado = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Excluir Remédio'),
+        content: Text('Tem certeza que deseja excluir este remédio?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text('Excluir', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmado == true) {
+      final dbHelper = DatabaseHelper();
+      await dbHelper.deleteRemedio(widget.remedio.id!);
+      Navigator.pop(context, true);
+    }
+  }
+
+
+  void _salvarAlteracoes() async {
+    widget.remedio.dosesDiarias = comprimidos;
+    widget.remedio.mensagem = mensagemController.text;
+
+    final dbHelper = DatabaseHelper();
+    await dbHelper.updateRemedio(widget.remedio);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Remédio atualizado com sucesso!')),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final r = widget.remedio;
@@ -47,6 +111,18 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         iconTheme: IconThemeData(color: Colors.black),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.save, color: Colors.blue),
+            onPressed: _salvarAlteracoes,
+            tooltip: 'Salvar alterações',
+          ),
+          IconButton(
+            icon: Icon(Icons.delete, color: Colors.red),
+            onPressed: confirmarExclusao,
+            tooltip: 'Excluir remédio',
+          ),
+        ],
       ),
       body: Padding(
         padding: EdgeInsets.all(16),
@@ -61,26 +137,27 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
               child: Row(
                 children: [
                   CircleAvatar(
-                    backgroundColor: r['cor'],
+                    backgroundColor: r.cor,
                     radius: 28,
-                    child: Icon(r['icone'], color: Colors.black, size: 28),
+                    child: Icon(r.icone, color: Colors.black, size: 28), 
                   ),
                   SizedBox(width: 12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(r['nome'], style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                        Text(r['tipo']),
+                        Text(r.nome,
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                        Text(r.tipo),
                       ],
                     ),
                   ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Text(r['frequencia'], style: TextStyle(color: Colors.green)),
+                      Text(r.frequencia, style: TextStyle(color: Colors.green)),
                       SizedBox(height: 4),
-                      Text(r['duracao'], style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text(r.duracao, style: TextStyle(fontWeight: FontWeight.bold)),
                       Icon(Icons.notifications_none),
                     ],
                   )
@@ -130,7 +207,8 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
               ),
             ),
             SizedBox(height: 12),
-            Text("Horários", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+            Text("Horários",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
             SizedBox(height: 8),
             ...List.generate(horarios.length, (i) {
               return GestureDetector(
@@ -162,12 +240,22 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
               ),
               padding: EdgeInsets.all(16),
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text("Mensagem"),
-                  Text("Não esqueça do seu remédio!",
+                  Expanded(
+                    child: TextField(
+                      controller: mensagemController,
                       textAlign: TextAlign.right,
-                      style: TextStyle(fontWeight: FontWeight.bold)),
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        isDense: true,
+                        contentPadding: EdgeInsets.zero,
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -179,7 +267,7 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
 }
 
 class TelaInicial extends StatefulWidget {
-  const TelaInicial({super.key});
+  TelaInicial({super.key});
 
   @override
   State<TelaInicial> createState() => _TelaInicialState();
@@ -187,36 +275,40 @@ class TelaInicial extends StatefulWidget {
 
 class _TelaInicialState extends State<TelaInicial> {
   int _indiceSelecionado = 0;
+  String _horaAtual = '';
+  late Timer _timer;
 
-  final List<Map<String, dynamic>> remedios = [
-    {
-      'nome': 'Seki',
-      'tipo': 'Xarope',
-      'frequencia': '2 vezes ao dia',
-      'duracao': '3 dias',
-      'cor': Colors.purpleAccent,
-      'icone': Icons.local_drink,
-      'inicio': DateTime(2025, 2, 9),
-    },
-    {
-      'nome': 'Vacina para gripe',
-      'tipo': 'Vacina',
-      'frequencia': '1 vez ao dia',
-      'duracao': '1 dia',
-      'cor': Colors.greenAccent,
-      'icone': Icons.vaccines,
-      'inicio': DateTime(2025, 2, 26),
-    },
-    {
-      'nome': 'Anticoncepcional',
-      'tipo': 'Comprimido',
-      'frequencia': '1 vez ao dia',
-      'duracao': '28 dias',
-      'cor':  Color.fromARGB(255, 66, 205, 244),
-      'icone': Icons.medication,
-      'inicio': DateTime(2025, 2, 10),
-    },
-  ];
+  List<Remedio> remedios = []; 
+
+  @override
+  void initState() {
+    super.initState();
+    _atualizarHora();
+    _timer = Timer.periodic(Duration(seconds: 1), (_) => _atualizarHora());
+    _carregarRemedios();
+  }
+
+  Future<void> _carregarRemedios() async {
+    final dbHelper = DatabaseHelper();
+    final loadedRemedios = await dbHelper.getRemedios();
+    setState(() {
+      remedios = loadedRemedios;
+    });
+  }
+
+  void _atualizarHora() {
+    final agora = DateTime.now();
+    setState(() {
+      _horaAtual =
+          '${agora.hour.toString().padLeft(2, '0')}:${agora.minute.toString().padLeft(2, '0')}';
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
 
   void _onTap(int index) {
     setState(() {
@@ -225,11 +317,9 @@ class _TelaInicialState extends State<TelaInicial> {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => AdicionarRemedioPage()),
-        ).then((novoRemedio) {
-          if (novoRemedio != null) {
-            setState(() {
-              remedios.add({...novoRemedio, 'inicio': DateTime.now()});
-            });
+        ).then((novoRemedioAdicionado) {
+          if (novoRemedioAdicionado == true) { 
+            _carregarRemedios(); 
           }
         });
       }
@@ -249,8 +339,8 @@ class _TelaInicialState extends State<TelaInicial> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Image.asset('assets/images/logo.png', width: 40),
-            const SizedBox(width: 8),
-            const Text(
+            SizedBox(width: 8),
+            Text(
               'RemindMed',
               style: TextStyle(
                 fontSize: 22,
@@ -263,75 +353,88 @@ class _TelaInicialState extends State<TelaInicial> {
       ),
       body: _indiceSelecionado == 1
           ? Padding(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(16),
               child: TelaCalendario(remedios: remedios),
             )
-          : ListView.builder(
-              itemCount: remedios.length,
-              itemBuilder: (context, index) {
-                final r = remedios[index];
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => DetalheRemedioPage(remedio: r),
-                        ),
-                      );
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.shade300,
-                            blurRadius: 5,
-                            offset: const Offset(0, 2),
-                          )
-                        ],
-                      ),
-                      child: ListTile(
-                        contentPadding: const EdgeInsets.all(12),
-                        leading: CircleAvatar(
-                          backgroundColor: r['cor'],
-                          radius: 28,
-                          child: Icon(r['icone'], color: Colors.black, size: 28),
-                        ),
-                        title: Text(
-                          r['nome'],
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        subtitle: Text(r['tipo']),
-                        trailing: Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              r['frequencia'],
-                              style: const TextStyle(color: Colors.green),
-                            ),
-                            const SizedBox(height: 4),
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  r['duracao'],
-                                  style: const TextStyle(fontWeight: FontWeight.bold),
+          : Column(
+              children: [
+                SizedBox(height: 12),
+                SizedBox(height: 12),
+                Expanded(
+                  child: remedios.isEmpty
+                      ? Center(child: Text('Nenhum remédio adicionado ainda.'))
+                      : ListView.builder(
+                          itemCount: remedios.length,
+                          itemBuilder: (context, index) {
+                            final r = remedios[index];
+                            return Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                              child: GestureDetector(
+                                onTap: () async {
+                                  final foiAlteradoOuExcluido = await Navigator.push<bool>(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => DetalheRemedioPage(remedio: r),
+                                    ),
+                                  );
+                                  if (foiAlteradoOuExcluido == true) {
+                                    _carregarRemedios();
+                                  }
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(16),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.shade300,
+                                        blurRadius: 5,
+                                        offset: Offset(0, 2),
+                                      )
+                                    ],
+                                  ),
+                                  child: ListTile(
+                                    contentPadding: EdgeInsets.all(12),
+                                    leading: CircleAvatar(
+                                      backgroundColor: r.cor,
+                                      radius: 28,
+                                      child: Icon(r.icone, color: Colors.black, size: 28),
+                                    ),
+                                    title: Text(
+                                      r.nome,
+                                      style: TextStyle(fontWeight: FontWeight.bold),
+                                    ),
+                                    subtitle: Text(r.tipo),
+                                    trailing: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          r.frequencia,
+                                          style: TextStyle(color: Colors.green),
+                                        ),
+                                        SizedBox(height: 4),
+                                        Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              r.duracao,
+                                              style: TextStyle(fontWeight: FontWeight.bold),
+                                            ),
+                                            SizedBox(width: 8),
+                                            Icon(Icons.notifications_none, size: 20),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
-                                const SizedBox(width: 8),
-                                const Icon(Icons.notifications_none, size: 20),
-                              ],
-                            ),
-                          ],
+                              ),
+                            );
+                          },
                         ),
-                      ),
-                    ),
-                  ),
-                );
-              },
+                ),
+              ],
             ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white,
@@ -343,7 +446,7 @@ class _TelaInicialState extends State<TelaInicial> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Início'),
           BottomNavigationBarItem(icon: Icon(Icons.calendar_today), label: 'Calendário'),
-          BottomNavigationBarItem(icon: Icon(Icons.add), label: 'Adicionar remédio'),
+          BottomNavigationBarItem(icon: Icon(Icons.add), label: 'Adicionar'),
           BottomNavigationBarItem(icon: Icon(Icons.place), label: 'Farmácias'),
           BottomNavigationBarItem(icon: Icon(Icons.inventory_2), label: 'Estoque'),
         ],

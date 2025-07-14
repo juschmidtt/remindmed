@@ -1,1 +1,0 @@
- C:\\Users\\julia\\OneDrive\\Documentos\\GitHub\\remindmed\\remindmed\\.dart_tool\\flutter_build\\dc1cea4b26e8b31cf2f6c907cebce858\\native_assets.json: 

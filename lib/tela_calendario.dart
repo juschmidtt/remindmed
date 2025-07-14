@@ -1,49 +1,93 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:remindmed/models/remedio.dart';
 
 class TelaCalendario extends StatefulWidget {
-  final List<Map<String, dynamic>> remedios;
+  final List<Remedio> remedios;
 
-  const TelaCalendario({super.key, required this.remedios});
+  TelaCalendario({super.key, required this.remedios});
 
   @override
   State<TelaCalendario> createState() => _TelaCalendarioState();
 }
 
 class _TelaCalendarioState extends State<TelaCalendario> {
-  DateTime _diaSelecionado = DateTime.now();
-  DateTime _focado = DateTime.now();
+  CalendarFormat _calendarFormat = CalendarFormat.month;
+  DateTime _focusedDay = DateTime.now();
+  DateTime? _selectedDay;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedDay = _focusedDay;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          TableCalendar(
-            locale: 'pt_BR',
-            focusedDay: _focado,
-            firstDay: DateTime.utc(2025, 1, 1),
-            lastDay: DateTime.utc(2100, 12, 31),
-            selectedDayPredicate: (day) => isSameDay(day, _diaSelecionado),
-            onDaySelected: (selected, focused) {
+    return Column(
+      children: [
+        TableCalendar(
+          firstDay: DateTime.utc(2023, 1, 1),
+          lastDay: DateTime.utc(2030, 12, 31),
+          focusedDay: _focusedDay,
+          calendarFormat: _calendarFormat,
+          selectedDayPredicate: (day) {
+            return isSameDay(_selectedDay, day);
+          },
+          onDaySelected: (selectedDay, focusedDay) {
+            setState(() {
+              _selectedDay = selectedDay;
+              _focusedDay = focusedDay;
+            });
+          },
+          onFormatChanged: (format) {
+            if (_calendarFormat != format) {
               setState(() {
-                _diaSelecionado = selected;
-                _focado = focused;
+                _calendarFormat = format;
               });
-            },
-            calendarStyle: CalendarStyle(
-              todayDecoration: BoxDecoration(color: Colors.lightBlue, shape: BoxShape.circle),
-              selectedDecoration: BoxDecoration(color: const Color.fromARGB(255, 0, 204, 255), shape: BoxShape.circle),
+            }
+          },
+          onPageChanged: (focusedDay) {
+            _focusedDay = focusedDay;
+          },
+          locale: 'pt_BR',
+          headerStyle: HeaderStyle(
+            formatButtonVisible: false,
+            titleCentered: true,
+            titleTextStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          ),
+          calendarStyle: CalendarStyle(
+            todayDecoration: BoxDecoration(
+              color: Colors.blue,
+              shape: BoxShape.circle,
             ),
-            headerStyle: HeaderStyle(
-              titleCentered: true,
-              formatButtonVisible: false,
-              titleTextFormatter: (date, locale) => DateFormat.yMMMM(locale).format(date),
+            selectedDecoration: BoxDecoration(
+              color: Colors.blue,
+              shape: BoxShape.circle,
             ),
           ),
-        ],
-      ),
+        ),
+        SizedBox(height: 8.0),
+        Expanded(
+          child: ListView.builder(
+            itemCount: widget.remedios.length,
+            itemBuilder: (context, index) {
+              final remedio = widget.remedios[index];
+              return Card(
+                margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                child: ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: remedio.cor, 
+                    child: Icon(remedio.icone), 
+                  ),
+                  title: Text(remedio.nome),
+                  subtitle: Text(remedio.tipo),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }

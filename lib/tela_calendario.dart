@@ -5,7 +5,7 @@ import 'package:remindmed/models/remedio.dart';
 class TelaCalendario extends StatefulWidget {
   final List<Remedio> remedios;
 
-  TelaCalendario({super.key, required this.remedios});
+  const TelaCalendario({super.key, required this.remedios});
 
   @override
   State<TelaCalendario> createState() => _TelaCalendarioState();

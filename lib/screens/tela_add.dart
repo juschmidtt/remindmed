@@ -1,68 +1,60 @@
-
 import 'package:flutter/material.dart';
 import '../models/remedio.dart';
-import '../database/database.dart'; 
+import '../database/database.dart';
 
 class AdicionarRemedioPage extends StatefulWidget {
-  AdicionarRemedioPage({super.key});
+  final Remedio? remedioExistente;
+  AdicionarRemedioPage({super.key, this.remedioExistente});
 
   @override
   State<AdicionarRemedioPage> createState() => _AdicionarRemedioPageState();
 }
 
 class _AdicionarRemedioPageState extends State<AdicionarRemedioPage> {
-  final TextEditingController nomeController = TextEditingController();
-  final TextEditingController comprimidosController = TextEditingController(); 
-
-  final List<String> tipos = ['Comprimido', 'Xarope', 'Gotas', 'Vacina'];
+  late TextEditingController nomeController;
   String tipoSelecionado = 'Comprimido';
-
-  final List<String> recorrencias = ['Diário', 'Semanal', 'Mensal', 'Anual'];
   String recorrenciaSelecionada = 'Diário';
-
   int quantidadeDias = 1;
   int vezesAoDia = 1;
-  int sintomaSelecionado = -1;
 
-  final List<IconData> iconesSintomas = [
-    Icons.healing, // dor de cabeça
-    Icons.sentiment_very_dissatisfied, // enjoo
-    Icons.heart_broken, // dor de barriga
-    Icons.coronavirus, // respiratórios
-    Icons.sick, // febre
-    Icons.abc, // dor de dente
-    Icons.heart_broken, // dor abdominal
-    Icons.heart_broken, // tosse
-    Icons.help_outline, // outro
-  ];
+  final List<String> tipos = ['Comprimido', 'Xarope', 'Gotas', 'Vacina'];
+  final List<String> recorrencias = ['Diário', 'Semanal', 'Mensal', 'Anual', 'Personalizado'];
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.remedioExistente != null) {
+      final r = widget.remedioExistente!;
+      nomeController = TextEditingController(text: r.nome);
+      tipoSelecionado = r.tipo;
+      recorrenciaSelecionada = r.recorrencia;
+      if (recorrenciaSelecionada == 'Personalizado') {
+        final dias = int.tryParse(r.duracao.split(' ').first) ?? 1;
+        quantidadeDias = dias;
+      }
+      vezesAoDia = r.dosesDiarias;
+    } else {
+      nomeController = TextEditingController();
+    }
+
+    nomeController.addListener(() {
+      setState(() {});
+    });
+  }
 
   Map<String, dynamic> getCorEIconePorTipo(String tipo) {
-    switch (tipo) {
+    switch (tipo.toLowerCase()) {
       case 'comprimido':
-        return {
-          'cor': const Color.fromARGB(255, 66, 205, 244),
-          'icone': Icons.medication,
-        };
+        return {'cor': Color(0xFF42CDF4), 'icone': Icons.medication};
       case 'vacina':
-        return {
-          'cor': Colors.greenAccent,
-          'icone': Icons.vaccines,
-        };
+        return {'cor': Colors.greenAccent, 'icone': Icons.vaccines};
       case 'gotas':
-        return {
-          'cor': const Color.fromARGB(255, 215, 61, 141),
-          'icone': Icons.opacity,
-        };
+        return {'cor': Color(0xFFD73D8D), 'icone': Icons.opacity};
       case 'xarope':
-        return {
-          'cor': Colors.purpleAccent,
-          'icone': Icons.local_drink,
-        };
+        return {'cor': Colors.purpleAccent, 'icone': Icons.local_drink};
       default:
-        return {
-          'cor': Colors.lightBlueAccent,
-          'icone': Icons.medication,
-        };
+        return {'cor': Colors.lightBlueAccent, 'icone': Icons.medication};
     }
   }
 
@@ -70,191 +62,198 @@ class _AdicionarRemedioPageState extends State<AdicionarRemedioPage> {
     final tipoInfo = getCorEIconePorTipo(tipoSelecionado);
 
     final novoRemedio = Remedio(
+      id: widget.remedioExistente?.id,
       nome: nomeController.text,
       tipo: tipoSelecionado,
       frequencia: '$vezesAoDia vezes ao dia',
       recorrencia: recorrenciaSelecionada,
-      duracao: '$quantidadeDias dias',
+      duracao: recorrenciaSelecionada == 'Personalizado'
+          ? '$quantidadeDias dias'
+          : recorrenciaSelecionada,
       corValue: (tipoInfo['cor'] as Color).value,
       iconeCodePoint: (tipoInfo['icone'] as IconData).codePoint,
-      iconeFontFamily: (tipoInfo['icone'] as IconData).fontFamily!, 
-      dosesDiarias: int.tryParse(comprimidosController.text) ?? 1,
+      iconeFontFamily: (tipoInfo['icone'] as IconData).fontFamily!,
+      dosesDiarias: vezesAoDia,
     );
 
     final dbHelper = DatabaseHelper();
-    await dbHelper.insertRemedio(novoRemedio);
-    final remedio = {
-      'nome': nomeController.text,
-      'tipo': tipoSelecionado,
-      'frequencia': '$vezesAoDia vezes ao dia',
-      'recorrencia': recorrenciaSelecionada, // nova info
-      'duracao': '$quantidadeDias dias',
-      'cor': tipoInfo['cor'],
-      'icone': tipoInfo['icone'],
-      'sintoma': sintomaSelecionado >= 0 ? iconesSintomas[sintomaSelecionado] : null,
-    };
-
-    Navigator.pop(context, true);
+    if (widget.remedioExistente == null) {
+      await dbHelper.insertRemedio(novoRemedio);
+    } else {
+      await dbHelper.updateRemedio(novoRemedio);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final tipoInfo = getCorEIconePorTipo(tipoSelecionado);
+
     return Scaffold(
       backgroundColor: const Color(0xFFF2F2F2),
       appBar: AppBar(
         title: Text(
-          'Adicionar novo Remédio',
-          style: TextStyle(color: Colors.black),
+          widget.remedioExistente == null ? 'Adicionar novo Remédio' : 'Editar Remédio',
+          style: const TextStyle(color: Colors.black),
         ),
         backgroundColor: Colors.white,
-        iconTheme: IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: ListView(
           children: [
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.shade300,
+                    blurRadius: 5,
+                    offset: Offset(0, 2),
+                  )
+                ],
+              ),
+              child: ListTile(
+                contentPadding: EdgeInsets.all(12),
+                leading: CircleAvatar(
+                  backgroundColor: tipoInfo['cor'],
+                  radius: 28,
+                  child: Icon(tipoInfo['icone'], color: Colors.black, size: 28),
+                ),
+                title: Text(
+                  nomeController.text.isEmpty ? 'Nome do remédio' : nomeController.text,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                subtitle: Text(tipoSelecionado),
+                trailing: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('$vezesAoDia vezes ao dia', style: TextStyle(color: Colors.green)),
+                    const SizedBox(height: 4),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          recorrenciaSelecionada == 'Personalizado'
+                              ? '$quantidadeDias dias'
+                              : recorrenciaSelecionada,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(width: 8),
+                        const Icon(Icons.notifications_none, size: 20),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+
             TextField(
               controller: nomeController,
-              decoration: InputDecoration(
+              onChanged: (_) {
+                setState(() {});
+                salvarRemedio();
+              },
+              decoration: const InputDecoration(
                 labelText: 'Nome do remédio',
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
+
             DropdownButtonFormField<String>(
               value: tipoSelecionado,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Tipo de remédio',
                 border: OutlineInputBorder(),
               ),
-              items: tipos.map((tipo) {
-                return DropdownMenuItem(value: tipo, child: Text(tipo));
-              }).toList(),
+              items: tipos.map((tipo) => DropdownMenuItem(value: tipo, child: Text(tipo))).toList(),
               onChanged: (value) {
                 setState(() {
                   tipoSelecionado = value!;
                 });
+                salvarRemedio();
               },
             ),
-            SizedBox(height: 12),
-            // NOVO: Dropdown para Recorrência
+            const SizedBox(height: 12),
+
             DropdownButtonFormField<String>(
               value: recorrenciaSelecionada,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Recorrência',
                 border: OutlineInputBorder(),
               ),
-              items: recorrencias.map((recorrencia) {
-                return DropdownMenuItem(
-                  value: recorrencia,
-                  child: Text(recorrencia),
-                );
-              }).toList(),
+              items: recorrencias.map((recorrencia) => DropdownMenuItem(
+                value: recorrencia,
+                child: Text(recorrencia),
+              )).toList(),
               onChanged: (value) {
                 setState(() {
                   recorrenciaSelecionada = value!;
+                  if (recorrenciaSelecionada != 'Personalizado') {
+                    quantidadeDias = 1;
+                  }
                 });
+                salvarRemedio();
               },
             ),
-            SizedBox(height: 12),
-            TextField(
-              controller: comprimidosController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: 'Quantidade de doses',
-                border: OutlineInputBorder(),
+            const SizedBox(height: 12),
+
+            if (recorrenciaSelecionada == 'Personalizado')
+              Row(
+                children: [
+                  const Text('Quantidade de dias:'),
+                  IconButton(
+                    icon: const Icon(Icons.remove_circle_outline),
+                    onPressed: () {
+                      setState(() {
+                        quantidadeDias = (quantidadeDias - 1).clamp(1, 365);
+                      });
+                      salvarRemedio();
+                    },
+                  ),
+                  Text('$quantidadeDias'),
+                  IconButton(
+                    icon: const Icon(Icons.add_circle_outline),
+                    onPressed: () {
+                      setState(() {
+                        quantidadeDias++;
+                      });
+                      salvarRemedio();
+                    },
+                  ),
+                ],
               ),
-            ),
-            SizedBox(height: 12),
+
+            const SizedBox(height: 12),
+
             Row(
               children: [
-                Text('Quantidade de dias:'),
+                const Text('Quantidade de vezes ao dia:'),
                 IconButton(
-                  icon: Icon(Icons.remove_circle_outline),
-                  onPressed: () {
-                    setState(() {
-                      quantidadeDias = (quantidadeDias - 1).clamp(1, 365);
-                    });
-                  },
-                ),
-                Text('$quantidadeDias'),
-                IconButton(
-                  icon: Icon(Icons.add_circle_outline),
-                  onPressed: () {
-                    setState(() {
-                      quantidadeDias++;
-                    });
-                  },
-                ),
-              ],
-            ),
-            SizedBox(height: 12),
-            Row(
-              children: [
-                Text('Quantidade de vezes ao dia:'),
-                IconButton(
-                  icon: Icon(Icons.remove_circle_outline),
+                  icon: const Icon(Icons.remove_circle_outline),
                   onPressed: () {
                     setState(() {
                       vezesAoDia = (vezesAoDia - 1).clamp(1, 24);
                     });
+                    salvarRemedio();
                   },
                 ),
                 Text('$vezesAoDia'),
                 IconButton(
-                  icon: Icon(Icons.add_circle_outline),
+                  icon: const Icon(Icons.add_circle_outline),
                   onPressed: () {
                     setState(() {
                       vezesAoDia++;
                     });
+                    salvarRemedio();
                   },
                 ),
               ],
             ),
-            SizedBox(height: 12),
-            Text('Sintomas que está tratando:'),
-            SizedBox(height: 8),
-            Wrap(
-              spacing: 12,
-              runSpacing: 12,
-              children: List.generate(iconesSintomas.length, (index) {
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      sintomaSelecionado = index;
-                    });
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: sintomaSelecionado == index
-                            ? Colors.blue
-                            : Colors.grey,
-                        width: 2,
-                      ),
-                    ),
-                    padding: EdgeInsets.all(12),
-                    child: Icon(
-                      iconesSintomas[index],
-                      size: 30,
-                      color: sintomaSelecionado == index
-                          ? Colors.blue
-                          : Colors.black,
-                    ),
-                  ),
-                );
-              }),
-            ),
-            SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: salvarRemedio,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                padding: EdgeInsets.symmetric(vertical: 16),
-              ),
-              child: Text('Salvar Remédio'),
-            )
           ],
         ),
       ),

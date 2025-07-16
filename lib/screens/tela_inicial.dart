@@ -1,4 +1,3 @@
-// lib/screens/tela_inicial.dart
 import 'package:flutter/material.dart';
 import 'package:remindmed/screens/tela_add.dart';
 import 'package:remindmed/tela_calendario.dart';
@@ -20,12 +19,6 @@ class DetalheRemedioPage extends StatefulWidget {
 
 class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
   late int comprimidos;
-  List<TimeOfDay> horarios = [
-    TimeOfDay(hour: 8, minute: 30),
-    TimeOfDay(hour: 16, minute: 30),
-    TimeOfDay(hour: 0, minute: 30),
-  ];
-
   late TextEditingController mensagemController;
 
   @override
@@ -36,6 +29,7 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
 
     mensagemController.addListener(() {
       widget.remedio.mensagem = mensagemController.text;
+      _salvarAlteracoes();
     });
   }
 
@@ -45,61 +39,12 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
     super.dispose();
   }
 
-  String formatarHora(TimeOfDay t) {
-    final h = t.hour.toString().padLeft(2, '0');
-    final m = t.minute.toString().padLeft(2, '0');
-    return '$h:$m';
-  }
-
-  Future<void> editarHorario(int index) async {
-    final novo = await showTimePicker(
-      context: context,
-      initialTime: horarios[index],
-    );
-    if (novo != null) {
-      setState(() {
-        horarios[index] = novo;
-      });
-    }
-  }
-
-  Future<void> confirmarExclusao() async {
-    final confirmado = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Excluir Remédio'),
-        content: Text('Tem certeza que deseja excluir este remédio?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text('Cancelar'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text('Excluir', style: TextStyle(color: Colors.red)),
-          ),
-        ],
-      ),
-    );
-
-    if (confirmado == true) {
-      final dbHelper = DatabaseHelper();
-      await dbHelper.deleteRemedio(widget.remedio.id!);
-      Navigator.pop(context, true);
-    }
-  }
-
-
   void _salvarAlteracoes() async {
     widget.remedio.dosesDiarias = comprimidos;
     widget.remedio.mensagem = mensagemController.text;
 
     final dbHelper = DatabaseHelper();
     await dbHelper.updateRemedio(widget.remedio);
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Remédio atualizado com sucesso!')),
-    );
   }
 
   @override
@@ -111,18 +56,6 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         iconTheme: IconThemeData(color: Colors.black),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.save, color: Colors.blue),
-            onPressed: _salvarAlteracoes,
-            tooltip: 'Salvar alterações',
-          ),
-          IconButton(
-            icon: Icon(Icons.delete, color: Colors.red),
-            onPressed: confirmarExclusao,
-            tooltip: 'Excluir remédio',
-          ),
-        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -181,6 +114,7 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
                         onPressed: () {
                           setState(() {
                             comprimidos = (comprimidos - 1).clamp(0, 20);
+                            _salvarAlteracoes();
                           });
                         },
                         icon: const Icon(Icons.remove_circle_outline),
@@ -197,6 +131,7 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
                         onPressed: () {
                           setState(() {
                             comprimidos++;
+                            _salvarAlteracoes();
                           });
                         },
                         icon: const Icon(Icons.add_circle_outline),
@@ -207,32 +142,6 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
               ),
             ),
             SizedBox(height: 12),
-            Text("Horários",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-            SizedBox(height: 8),
-            ...List.generate(horarios.length, (i) {
-              return GestureDetector(
-                onTap: () => editarHorario(i),
-                child: Container(
-                  decoration: const BoxDecoration(color: Colors.white),
-                  margin: const EdgeInsets.symmetric(vertical: 4),
-                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text("Lembrete ${i + 1}"),
-                      Text(
-                        formatarHora(horarios[i]),
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              );
-            }),
-            const SizedBox(height: 12),
             Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -266,6 +175,7 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
   }
 }
 
+// Parte 2: TelaInicial
 class TelaInicial extends StatefulWidget {
   TelaInicial({super.key});
 
@@ -359,7 +269,6 @@ class _TelaInicialState extends State<TelaInicial> {
           : Column(
               children: [
                 SizedBox(height: 12),
-                SizedBox(height: 12),
                 Expanded(
                   child: remedios.isEmpty
                       ? Center(child: Text('Nenhum remédio adicionado ainda.'))
@@ -367,8 +276,39 @@ class _TelaInicialState extends State<TelaInicial> {
                           itemCount: remedios.length,
                           itemBuilder: (context, index) {
                             final r = remedios[index];
-                            return Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                            return Dismissible(
+                              key: ValueKey(r.id),
+                              direction: DismissDirection.endToStart,
+                              background: Container(
+                                alignment: Alignment.centerRight,
+                                padding: EdgeInsets.symmetric(horizontal: 20),
+                                color: Colors.red,
+                                child: Icon(Icons.delete, color: Colors.white),
+                              ),
+                              confirmDismiss: (_) async {
+                                return await showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: Text('Excluir Remédio'),
+                                    content: Text('Deseja realmente excluir este remédio?'),
+                                    actions: [
+                                      TextButton(
+                                        child: Text('Cancelar'),
+                                        onPressed: () => Navigator.of(context).pop(false),
+                                      ),
+                                      TextButton(
+                                        child: Text('Excluir', style: TextStyle(color: Colors.red)),
+                                        onPressed: () => Navigator.of(context).pop(true),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                              onDismissed: (_) async {
+                                final dbHelper = DatabaseHelper();
+                                await dbHelper.deleteRemedio(r.id!);
+                                _carregarRemedios();
+                              },
                               child: GestureDetector(
                                 onTap: () async {
                                   final foiAlteradoOuExcluido = await Navigator.push<bool>(
@@ -382,6 +322,7 @@ class _TelaInicialState extends State<TelaInicial> {
                                   }
                                 },
                                 child: Container(
+                                  margin: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(16),

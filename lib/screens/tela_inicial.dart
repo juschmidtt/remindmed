@@ -48,6 +48,8 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
   String formatarHora(TimeOfDay t) {
     final h = t.hour.toString().padLeft(2, '0');
     final m = t.minute.toString().padLeft(2, '0');
+    final h = t.hour.toString().padLeft(2, '0');
+    final m = t.minute.toString().padLeft(2, '0');
     return '$h:$m';
   }
 
@@ -125,7 +127,7 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
         ],
       ),
       body: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             Container(
@@ -133,7 +135,7 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(16),
               ),
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               child: Row(
                 children: [
                   CircleAvatar(
@@ -141,7 +143,7 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
                     radius: 28,
                     child: Icon(r.icone, color: Colors.black, size: 28), 
                   ),
-                  SizedBox(width: 12),
+                  const SizedBox(width: 12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -164,17 +166,17 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
                 ],
               ),
             ),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
             Container(
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(12),
               ),
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("Número de doses diárias"),
+                  const Text("Número de doses diárias"),
                   Row(
                     children: [
                       IconButton(
@@ -183,11 +185,11 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
                             comprimidos = (comprimidos - 1).clamp(0, 20);
                           });
                         },
-                        icon: Icon(Icons.remove_circle_outline),
+                        icon: const Icon(Icons.remove_circle_outline),
                       ),
                       Text(
                         '$comprimidos',
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Color.fromARGB(255, 78, 173, 228),
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
@@ -199,7 +201,7 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
                             comprimidos++;
                           });
                         },
-                        icon: Icon(Icons.add_circle_outline),
+                        icon: const Icon(Icons.add_circle_outline),
                       ),
                     ],
                   )
@@ -214,16 +216,16 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
               return GestureDetector(
                 onTap: () => editarHorario(i),
                 child: Container(
-                  decoration: BoxDecoration(color: Colors.white),
-                  margin: EdgeInsets.symmetric(vertical: 4),
-                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                  decoration: const BoxDecoration(color: Colors.white),
+                  margin: const EdgeInsets.symmetric(vertical: 4),
+                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text("Lembrete ${i + 1}"),
                       Text(
                         formatarHora(horarios[i]),
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontWeight: FontWeight.bold,
                         ),
                       )
@@ -232,14 +234,15 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
                 ),
               );
             }),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
             Container(
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(12),
               ),
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

@@ -83,6 +83,16 @@ class _AdicionarRemedioPageState extends State<AdicionarRemedioPage> {
 
     final dbHelper = DatabaseHelper();
     await dbHelper.insertRemedio(novoRemedio);
+    final remedio = {
+      'nome': nomeController.text,
+      'tipo': tipoSelecionado,
+      'frequencia': '$vezesAoDia vezes ao dia',
+      'recorrencia': recorrenciaSelecionada, // nova info
+      'duracao': '$quantidadeDias dias',
+      'cor': tipoInfo['cor'],
+      'icone': tipoInfo['icone'],
+      'sintoma': sintomaSelecionado >= 0 ? iconesSintomas[sintomaSelecionado] : null,
+    };
 
     Navigator.pop(context, true);
   }
@@ -147,6 +157,27 @@ class _AdicionarRemedioPageState extends State<AdicionarRemedioPage> {
               },
             ),
             SizedBox(height: 12),
+            const SizedBox(height: 12),
+            // NOVO: Dropdown para Recorrência
+            DropdownButtonFormField<String>(
+              value: recorrenciaSelecionada,
+              decoration: const InputDecoration(
+                labelText: 'Recorrência',
+                border: OutlineInputBorder(),
+              ),
+              items: recorrencias.map((recorrencia) {
+                return DropdownMenuItem(
+                  value: recorrencia,
+                  child: Text(recorrencia),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  recorrenciaSelecionada = value!;
+                });
+              },
+            ),
+            const SizedBox(height: 12),
             TextField(
               controller: comprimidosController,
               keyboardType: TextInputType.number,

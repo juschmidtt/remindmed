@@ -10,11 +10,11 @@
 		</data>
 		<key>Resources/flutter_assets/AssetManifest.bin</key>
 		<data>
-		618iXwglb30rChANrOcmkBxB0Uc=
+		Ldih/SH3KCr/akRug/rf6ZEZhnc=
 		</data>
 		<key>Resources/flutter_assets/AssetManifest.json</key>
 		<data>
-		xyXosY4nELGIjCd380Izq49OPM0=
+		wwutGthbmWDtMbJJa7QfDZHMFgU=
 		</data>
 		<key>Resources/flutter_assets/FontManifest.json</key>
 		<data>
@@ -27,6 +27,38 @@
 		<key>Resources/flutter_assets/NativeAssetsManifest.json</key>
 		<data>
 		re4p7E8rPLLsN+wzaPN/+AVpXTY=
+		</data>
+		<key>Resources/flutter_assets/assets/farmacias/farmasesi.jpeg</key>
+		<data>
+		rYnkgXd7wseyX4zrSNGwlQDvLWo=
+		</data>
+		<key>Resources/flutter_assets/assets/farmacias/farmatotal.jpeg</key>
+		<data>
+		005bg4krKWmY23ba1Ptsj7WVC4k=
+		</data>
+		<key>Resources/flutter_assets/assets/farmacias/fct.jpeg</key>
+		<data>
+		aWLT8NdQDVcKvyalIKCpOhDzKh0=
+		</data>
+		<key>Resources/flutter_assets/assets/farmacias/liderfarma.jpeg</key>
+		<data>
+		foe+fcypVkG9rkF13ZkrU1lUMNs=
+		</data>
+		<key>Resources/flutter_assets/assets/farmacias/oestefarma.jpeg</key>
+		<data>
+		L5XuSqN1SmIbv0HSOu03aYEGAL8=
+		</data>
+		<key>Resources/flutter_assets/assets/farmacias/panvel.jpeg</key>
+		<data>
+		MCx/kUIUadzPrYyJB/XJzH6xqFc=
+		</data>
+		<key>Resources/flutter_assets/assets/farmacias/precopopular.jpeg</key>
+		<data>
+		972J4bMlfiDlqKD60nBy2oQ13f0=
+		</data>
+		<key>Resources/flutter_assets/assets/farmacias/saojoao.jpeg</key>
+		<data>
+		fV/B+LlVIjULOK6mzCPZ4nVGKK0=
 		</data>
 		<key>Resources/flutter_assets/assets/images/logo.png</key>
 		<data>
@@ -42,7 +74,7 @@
 		</data>
 		<key>Resources/flutter_assets/kernel_blob.bin</key>
 		<data>
-		bjAitv/XMNs3fHRU0dlozmIPCe0=
+		tvQXQBrxFWK8jUktZURkXt3a1XI=
 		</data>
 		<key>Resources/flutter_assets/packages/cupertino_icons/assets/CupertinoIcons.ttf</key>
 		<data>
@@ -70,14 +102,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			mf8Hlv6qfkU4yxN+wrJgI2WX7W7+rO/3m5MkXNb0CpU=
+			39+QuZI9WS8dMS/fl61rjetxzeCSTAgULLT+f9Y8F7g=
 			</data>
 		</dict>
 		<key>Resources/flutter_assets/AssetManifest.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			97hy/T258qiF/5bjNoPTjIQMhAdVp3b/OSUqcjXlU1M=
+			CkucI+eNstgIfzJTTPR1Cy8MvtgdpkEzT7iMzlAWxYg=
 			</data>
 		</dict>
 		<key>Resources/flutter_assets/FontManifest.json</key>
@@ -99,6 +131,62 @@
 			<key>hash2</key>
 			<data>
 			lUijHkoEgTXB2U+Rkyi/tirix7s8q5ZVfHlB2ql3dss=
+			</data>
+		</dict>
+		<key>Resources/flutter_assets/assets/farmacias/farmasesi.jpeg</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			08ixlx+3klE8JTuxAI3zsQcgL2cfY2pVDvXG7Wsyai0=
+			</data>
+		</dict>
+		<key>Resources/flutter_assets/assets/farmacias/farmatotal.jpeg</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			EH58k+80tJOXAqNqNaFeTKoXUXmKfXGR5XlzP/c7M58=
+			</data>
+		</dict>
+		<key>Resources/flutter_assets/assets/farmacias/fct.jpeg</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			1rpH4Rjh9wD37VEpx0RS2uYHWeN+HWnIxxasuhnBN9k=
+			</data>
+		</dict>
+		<key>Resources/flutter_assets/assets/farmacias/liderfarma.jpeg</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			vHDXZgwy6m+NWtHdJWIzkVytDzlXTH9EDyQCNZInhr0=
+			</data>
+		</dict>
+		<key>Resources/flutter_assets/assets/farmacias/oestefarma.jpeg</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			tKCsV/uo8yYiKfEHoEVWEAnIh905++PRh5Y88fJFQyE=
+			</data>
+		</dict>
+		<key>Resources/flutter_assets/assets/farmacias/panvel.jpeg</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			QU7x5bOkwH3ieH2B3GZbYZa6St/6ceg6Ox6utayT53Y=
+			</data>
+		</dict>
+		<key>Resources/flutter_assets/assets/farmacias/precopopular.jpeg</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			X6JbMpkhf1zi/LWim8c62oA7WS3PGvbpGh8zOhC5j0A=
+			</data>
+		</dict>
+		<key>Resources/flutter_assets/assets/farmacias/saojoao.jpeg</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			GbQqQq/EaSMbm1htZCd1dJ4acvsjto9pYaO9lckDWRg=
 			</data>
 		</dict>
 		<key>Resources/flutter_assets/assets/images/logo.png</key>
@@ -126,7 +214,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			h694FFmQL5NLEUk7LxsXVsOmfDkCqFYaKduLQXG8JIU=
+			bKDuTFQPMKaat0IQD35mXILZRsLwpOhaH7yeRuiXLpM=
 			</data>
 		</dict>
 		<key>Resources/flutter_assets/packages/cupertino_icons/assets/CupertinoIcons.ttf</key>

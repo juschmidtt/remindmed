@@ -500,6 +500,13 @@
 /Users/joaovictormuraro/.pub-cache/hosted/pub.dev/typed_data-1.4.0/lib/typed_buffers.dart
 /Users/joaovictormuraro/.pub-cache/hosted/pub.dev/typed_data-1.4.0/lib/typed_data.dart
 /Users/joaovictormuraro/.pub-cache/hosted/pub.dev/url_launcher-6.3.1/LICENSE
+/Users/joaovictormuraro/.pub-cache/hosted/pub.dev/url_launcher-6.3.1/lib/src/legacy_api.dart
+/Users/joaovictormuraro/.pub-cache/hosted/pub.dev/url_launcher-6.3.1/lib/src/type_conversion.dart
+/Users/joaovictormuraro/.pub-cache/hosted/pub.dev/url_launcher-6.3.1/lib/src/types.dart
+/Users/joaovictormuraro/.pub-cache/hosted/pub.dev/url_launcher-6.3.1/lib/src/url_launcher_string.dart
+/Users/joaovictormuraro/.pub-cache/hosted/pub.dev/url_launcher-6.3.1/lib/src/url_launcher_uri.dart
+/Users/joaovictormuraro/.pub-cache/hosted/pub.dev/url_launcher-6.3.1/lib/url_launcher.dart
+/Users/joaovictormuraro/.pub-cache/hosted/pub.dev/url_launcher-6.3.1/lib/url_launcher_string.dart
 /Users/joaovictormuraro/.pub-cache/hosted/pub.dev/url_launcher_android-6.3.16/LICENSE
 /Users/joaovictormuraro/.pub-cache/hosted/pub.dev/url_launcher_android-6.3.16/lib/src/messages.g.dart
 /Users/joaovictormuraro/.pub-cache/hosted/pub.dev/url_launcher_android-6.3.16/lib/url_launcher_android.dart
@@ -691,8 +698,9 @@
 /Users/joaovictormuraro/Desktop/IFC /Devix/remindmed/lib/main.dart
 /Users/joaovictormuraro/Desktop/IFC /Devix/remindmed/lib/models/remedio.dart
 /Users/joaovictormuraro/Desktop/IFC /Devix/remindmed/lib/screens/tela_add.dart
+/Users/joaovictormuraro/Desktop/IFC /Devix/remindmed/lib/screens/tela_calendario.dart
+/Users/joaovictormuraro/Desktop/IFC /Devix/remindmed/lib/screens/tela_farmacia.dart
 /Users/joaovictormuraro/Desktop/IFC /Devix/remindmed/lib/screens/tela_inicial.dart
-/Users/joaovictormuraro/Desktop/IFC /Devix/remindmed/lib/tela_calendario.dart
 /Users/joaovictormuraro/Desktop/IFC /Devix/remindmed/pubspec.yaml
 /Users/joaovictormuraro/development/flutter/bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf
 /Users/joaovictormuraro/development/flutter/bin/cache/pkg/sky_engine/LICENSE

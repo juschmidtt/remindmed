@@ -6,7 +6,7 @@
 	<integer>11</integer>
 	<key>logs</key>
 	<dict>
-		<key>3237896A-F127-4D62-A9F3-DF0CFA7D6327</key>
+		<key>3D4824DB-5E55-4BD2-A06D-42405D399FDD</key>
 		<dict>
 			<key>className</key>
 			<string>IDECommandLineBuildLog</string>
@@ -15,7 +15,7 @@
 			<key>domainType</key>
 			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
 			<key>fileName</key>
-			<string>3237896A-F127-4D62-A9F3-DF0CFA7D6327.xcactivitylog</string>
+			<string>3D4824DB-5E55-4BD2-A06D-42405D399FDD.xcactivitylog</string>
 			<key>hasPrimaryLog</key>
 			<true/>
 			<key>primaryObservable</key>
@@ -40,15 +40,15 @@
 			<key>signature</key>
 			<string>Building workspace Runner with scheme Runner and configuration Debug</string>
 			<key>timeStartedRecording</key>
-			<real>774387706.36507905</real>
+			<real>774528730.38398504</real>
 			<key>timeStoppedRecording</key>
-			<real>774387724.33915496</real>
+			<real>774528741.81781399</real>
 			<key>title</key>
 			<string>Building workspace Runner with scheme Runner and configuration Debug</string>
 			<key>uniqueIdentifier</key>
-			<string>3237896A-F127-4D62-A9F3-DF0CFA7D6327</string>
+			<string>3D4824DB-5E55-4BD2-A06D-42405D399FDD</string>
 		</dict>
-		<key>999F8F4D-F275-4B83-B80C-BE2EF0795789</key>
+		<key>98B31E45-F77F-4021-AF46-B1D3FF3C0470</key>
 		<dict>
 			<key>className</key>
 			<string>IDECommandLineBuildLog</string>
@@ -57,7 +57,7 @@
 			<key>domainType</key>
 			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
 			<key>fileName</key>
-			<string>999F8F4D-F275-4B83-B80C-BE2EF0795789.xcactivitylog</string>
+			<string>98B31E45-F77F-4021-AF46-B1D3FF3C0470.xcactivitylog</string>
 			<key>hasPrimaryLog</key>
 			<true/>
 			<key>primaryObservable</key>
@@ -71,7 +71,7 @@
 				<key>totalNumberOfTestFailures</key>
 				<integer>0</integer>
 				<key>totalNumberOfWarnings</key>
-				<integer>2</integer>
+				<integer>1</integer>
 			</dict>
 			<key>schemeIdentifier-containerName</key>
 			<string>Runner project</string>
@@ -82,13 +82,13 @@
 			<key>signature</key>
 			<string>Building workspace Runner with scheme Runner and configuration Debug</string>
 			<key>timeStartedRecording</key>
-			<real>774386142.88259995</real>
+			<real>774531637.51850295</real>
 			<key>timeStoppedRecording</key>
-			<real>774386157.84958899</real>
+			<real>774531648.99958599</real>
 			<key>title</key>
 			<string>Building workspace Runner with scheme Runner and configuration Debug</string>
 			<key>uniqueIdentifier</key>
-			<string>999F8F4D-F275-4B83-B80C-BE2EF0795789</string>
+			<string>98B31E45-F77F-4021-AF46-B1D3FF3C0470</string>
 		</dict>
 	</dict>
 </dict>

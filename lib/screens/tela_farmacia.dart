@@ -13,20 +13,82 @@ class _TelaFarmaciaState extends State<TelaFarmacia> {
 
   final List<Map<String, dynamic>> farmacias = [
     {
-      'nome': 'PanVel Concórdia',
-      'endereco': 'R. Dr. Maruri, 515',
-      'avaliacao': 4.5,
-      'imagem': 'assets/farmacias/panvel.jpg',
-      'mapsUrl': 'https://maps.google.com/?q=R.+Dr.+Maruri,+515'
+      'nome': 'Líderfarma',
+      'endereco': 'R. Mal Deodoro, 949',
+      'avaliacao': 4.9,
+      'imagem': 'assets/farmacias/liderfarma.jpeg',
+      'mapsUrl': 'https://maps.app.goo.gl/9isanmUfNEqen8Qs5'
     },
     {
-      'nome': 'Farmácia Preço Popular',
-      'endereco': 'R. Mal. Deodoro, 1685',
-      'avaliacao': 4.9,
-      'imagem': 'assets/farmacias/popular.jpg',
-      'mapsUrl': 'https://maps.google.com/?q=R.+Mal.+Deodoro,+1685'
+      'nome': 'PanVel',
+      'endereco': 'R. Doutor Maruri, 515',
+      'avaliacao': 4.6,
+      'imagem': 'assets/farmacias/panvel.jpeg',
+      'mapsUrl': 'https://maps.app.goo.gl/VZYbHbD13vAb2nvD8'
     },
-    // outras
+    {
+      'nome': 'Preço Popular',
+      'endereco': 'R. Mal Deodoro, 826',
+      'avaliacao': 4.9,
+      'imagem': 'assets/farmacias/precopopular.jpeg',
+      'mapsUrl': 'https://maps.app.goo.gl/UpAMRGiRZobGzKwj7'
+    },
+    {
+      'nome': 'FarmaTotal',
+      'endereco': 'R. Doutor Maruri, 1765',
+      'avaliacao': 4.9,
+      'imagem': 'assets/farmacias/farmatotal.jpeg',
+      'mapsUrl': 'https://maps.app.goo.gl/VU6BoBnJPSfUahm59'
+    },
+    {
+      'nome': 'São João',
+      'endereco': 'R. Mal Deodoro, 952',
+      'avaliacao': 4.1,
+      'imagem': 'assets/farmacias/saojoao.jpeg',
+      'mapsUrl': 'https://maps.app.goo.gl/VZYbHbD13vAb2nvD8'
+    },
+    {
+      'nome': 'OesteFarma',
+      'endereco': 'Anexo ao Via Passarela',
+      'avaliacao': 4.9,
+      'imagem': 'assets/farmacias/oestefarma.jpeg',
+      'mapsUrl': 'https://maps.app.goo.gl/JEZ5mnPAYhveKmzC6'
+    },
+    {
+      'nome': 'Preço Popular',
+      'endereco': 'R. Anita Garibaldi, 16',
+      'avaliacao': 4.8,
+      'imagem': 'assets/farmacias/precopopular.jpeg',
+      'mapsUrl': 'https://maps.app.goo.gl/7Rc4p48muyKPPiW96'
+    },
+    {
+      'nome': 'Farmácia do Trabalhador FCT',
+      'endereco': 'R. do Comércio',
+      'avaliacao': 4.2,
+      'imagem': 'assets/farmacias/fct.jpeg',
+      'mapsUrl': 'https://maps.app.goo.gl/y9NbWz11ohLcPf3A7'
+    },
+    {
+      'nome': 'FarmaSesi',
+      'endereco': 'R. Mal Deodoro, 969',
+      'avaliacao': 4.1,
+      'imagem': 'assets/farmacias/farmasesi.jpeg',
+      'mapsUrl': 'https://maps.app.goo.gl/2n7g8z1friachq9w7'
+    },
+    {
+      'nome': 'Farmácia Brasil',
+      'endereco': 'R. Mal Deodoro, 1000',
+      'avaliacao': 4.6,
+      'imagem': 'assets/farmacias/liderfarma.jpeg',
+      'mapsUrl': ''
+    },
+    {
+      'nome': 'farmaSesi Comércio',
+      'endereco': 'R. do Comércio, 336',
+      'avaliacao': 3.8,
+      'imagem': 'assets/farmacias/farmasesi.jpeg',
+      'mapsUrl': 'https://maps.app.goo.gl/o1Va9MhBVwNWPDwC7'
+    },
   ];
 
   Future<void> _abrirNoMapa(String url) async {
@@ -40,29 +102,23 @@ class _TelaFarmaciaState extends State<TelaFarmacia> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white, // fundo branco
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade100,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: const Text(
-                'Precisando de mais remédios?',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-            ),
             const SizedBox(height: 16),
             DropdownButtonFormField<String>(
               value: cidadeSelecionada,
-              decoration: const InputDecoration(
-                prefixIcon: Icon(Icons.location_on),
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                prefixIcon: const Icon(Icons.location_on),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: Colors.grey.shade300),
+                ),
+                filled: true,
+                fillColor: Colors.white,
               ),
               items: const [
                 DropdownMenuItem(
@@ -83,10 +139,13 @@ class _TelaFarmaciaState extends State<TelaFarmacia> {
                 itemBuilder: (context, index) {
                   final farmacia = farmacias[index];
                   return Card(
+                    color: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
+                      side: BorderSide(color: Colors.grey.shade200),
                     ),
                     margin: const EdgeInsets.only(bottom: 12),
+                    elevation: 2,
                     child: ListTile(
                       contentPadding: const EdgeInsets.all(12),
                       leading: ClipRRect(

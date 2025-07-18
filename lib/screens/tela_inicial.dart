@@ -318,24 +318,19 @@ class _TelaInicialState extends State<TelaInicial> {
 
   void _onTap(int index) {
     setState(() {
-      _indiceSelecionado = index;
+      if (index == 2) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => AdicionarRemedioPage()),
+        ).then((novoRemedioAdicionado) {
+          if (novoRemedioAdicionado == true) {
+            _carregarRemedios();
+          }
+        });
+      } else {
+        _indiceSelecionado = index;
+      }
     });
-
-    if (index == 2) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => AdicionarRemedioPage()),
-      ).then((novoRemedioAdicionado) {
-        if (novoRemedioAdicionado == true) {
-          _carregarRemedios();
-        }
-      });
-    } else if (index == 3) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => TelaFarmacia()),
-      );
-    }
   }
 
   @override
@@ -363,176 +358,132 @@ class _TelaInicialState extends State<TelaInicial> {
           ],
         ),
       ),
-      body:
-          _indiceSelecionado == 1
-              ? Padding(
-                padding: EdgeInsets.all(16),
-                child: TelaCalendario(remedios: remedios),
-              )
-              : Column(
-                children: [
-                  SizedBox(height: 12),
-                  SizedBox(height: 12),
-                  Expanded(
-                    child:
-                        remedios.isEmpty
-                            ? Center(
-                              child: Text('Nenhum remédio adicionado ainda.'),
-                            )
-                            : ListView.builder(
-                              itemCount: remedios.length,
-                              itemBuilder: (context, index) {
-                                final r = remedios[index];
-                                return Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                    vertical: 6,
+      body: () {
+        switch (_indiceSelecionado) {
+          case 1:
+            return Padding(
+              padding: EdgeInsets.all(16),
+              child: TelaCalendario(remedios: remedios),
+            );
+          case 3:
+            return TelaFarmacia();
+          default:
+            return Column(
+              children: [
+                SizedBox(height: 12),
+                SizedBox(height: 12),
+                Expanded(
+                  child: remedios.isEmpty
+                      ? Center(child: Text('Nenhum remédio adicionado ainda.'))
+                      : ListView.builder(
+                          itemCount: remedios.length,
+                          itemBuilder: (context, index) {
+                            final r = remedios[index];
+                            return Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 6,
+                              ),
+                              child: Dismissible(
+                                key: Key(r.id.toString()),
+                                direction: DismissDirection.endToStart,
+                                background: Container(
+                                  alignment: Alignment.centerRight,
+                                  padding: EdgeInsets.symmetric(horizontal: 20),
+                                  decoration: BoxDecoration(
+                                    color: Colors.red,
+                                    borderRadius: BorderRadius.circular(16),
                                   ),
-                                  child: Dismissible(
-                                    key: Key(r.id.toString()),
-                                    direction: DismissDirection.endToStart,
-                                    background: Container(
-                                      alignment: Alignment.centerRight,
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 20,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: Colors.red,
-                                        borderRadius: BorderRadius.circular(16),
-                                      ),
-                                      child: Icon(
-                                        Icons.delete,
-                                        color: Colors.white,
-                                      ),
+                                  child: Icon(Icons.delete, color: Colors.white),
+                                ),
+                                confirmDismiss: (direction) async {
+                                  return await showDialog<bool>(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      title: Text('Excluir Remédio'),
+                                      content: Text('Tem certeza que deseja excluir este remédio?'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () => Navigator.pop(context, false),
+                                          child: Text('Cancelar'),
+                                        ),
+                                        TextButton(
+                                          onPressed: () => Navigator.pop(context, true),
+                                          child: Text('Excluir', style: TextStyle(color: Colors.red)),
+                                        ),
+                                      ],
                                     ),
-                                    confirmDismiss: (direction) async {
-                                      return await showDialog<bool>(
-                                        context: context,
-                                        builder:
-                                            (context) => AlertDialog(
-                                              title: Text('Excluir Remédio'),
-                                              content: Text(
-                                                'Tem certeza que deseja excluir este remédio?',
-                                              ),
-                                              actions: [
-                                                TextButton(
-                                                  onPressed:
-                                                      () => Navigator.pop(
-                                                        context,
-                                                        false,
-                                                      ),
-                                                  child: Text('Cancelar'),
-                                                ),
-                                                TextButton(
-                                                  onPressed:
-                                                      () => Navigator.pop(
-                                                        context,
-                                                        true,
-                                                      ),
-                                                  child: Text(
-                                                    'Excluir',
-                                                    style: TextStyle(
-                                                      color: Colors.red,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                      );
-                                    },
-                                    onDismissed: (direction) async {
-                                      final dbHelper = DatabaseHelper();
-                                      await dbHelper.deleteRemedio(r.id!);
-                                      setState(() {
-                                        remedios.removeAt(index);
-                                      });
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(16),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.grey.shade300,
-                                            blurRadius: 5,
-                                            offset: Offset(0, 2),
-                                          ),
-                                        ],
+                                  );
+                                },
+                                onDismissed: (direction) async {
+                                  final dbHelper = DatabaseHelper();
+                                  await dbHelper.deleteRemedio(r.id!);
+                                  setState(() {
+                                    remedios.removeAt(index);
+                                  });
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(16),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.shade300,
+                                        blurRadius: 5,
+                                        offset: Offset(0, 2),
                                       ),
-                                      child: ListTile(
-                                        onTap: () async {
-                                          final foiAlteradoOuExcluido =
-                                              await Navigator.push<bool>(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder:
-                                                      (context) =>
-                                                          DetalheRemedioPage(
-                                                            remedio: r,
-                                                          ),
-                                                ),
-                                              );
-                                          if (foiAlteradoOuExcluido == true) {
-                                            _carregarRemedios();
-                                          }
-                                        },
-                                        contentPadding: EdgeInsets.all(12),
-                                        leading: CircleAvatar(
-                                          backgroundColor: r.cor,
-                                          radius: 28,
-                                          child: Icon(
-                                            r.icone,
-                                            color: Colors.black,
-                                            size: 28,
-                                          ),
+                                    ],
+                                  ),
+                                  child: ListTile(
+                                    onTap: () async {
+                                      final foiAlteradoOuExcluido = await Navigator.push<bool>(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => DetalheRemedioPage(remedio: r),
                                         ),
-                                        title: Text(
-                                          r.nome,
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        subtitle: Text(r.tipo),
-                                        trailing: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.end,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
+                                      );
+                                      if (foiAlteradoOuExcluido == true) {
+                                        _carregarRemedios();
+                                      }
+                                    },
+                                    contentPadding: EdgeInsets.all(12),
+                                    leading: CircleAvatar(
+                                      backgroundColor: r.cor,
+                                      radius: 28,
+                                      child: Icon(r.icone, color: Colors.black, size: 28),
+                                    ),
+                                    title: Text(r.nome, style: TextStyle(fontWeight: FontWeight.bold)),
+                                    subtitle: Text(r.tipo),
+                                    trailing: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text(r.frequencia, style: TextStyle(color: Colors.green)),
+                                        SizedBox(height: 4),
+                                        Row(
+                                          mainAxisSize: MainAxisSize.min,
                                           children: [
                                             Text(
-                                              r.frequencia,
-                                              style: TextStyle(
-                                                color: Colors.green,
-                                              ),
+                                              r.duracao,
+                                              style: TextStyle(fontWeight: FontWeight.bold),
                                             ),
-                                            SizedBox(height: 4),
-                                            Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Text(
-                                                  r.duracao,
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                                SizedBox(width: 8),
-                                                Icon(
-                                                  Icons.notifications_none,
-                                                  size: 20,
-                                                ),
-                                              ],
-                                            ),
+                                            SizedBox(width: 8),
+                                            Icon(Icons.notifications_none, size: 20),
                                           ],
                                         ),
-                                      ),
+                                      ],
                                     ),
                                   ),
-                                );
-                              },
-                            ),
-                  ),
-                ],
-              ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                ),
+              ],
+            );
+        }
+      }(),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white,
         currentIndex: _indiceSelecionado,

@@ -9,7 +9,7 @@ import '../database/database.dart';
 class DetalheRemedioPage extends StatefulWidget {
   final Remedio remedio;
 
-  DetalheRemedioPage({super.key, required this.remedio});
+  const DetalheRemedioPage({super.key, required this.remedio});
 
   @override
   State<DetalheRemedioPage> createState() => _DetalheRemedioPageState();
@@ -87,17 +87,17 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
     }
   }
 
-  void _salvarAlteracoes() async {
-    widget.remedio.dosesDiarias = comprimidos;
-    widget.remedio.mensagem = mensagemController.text;
+  // void _salvarAlteracoes() async {
+  //   widget.remedio.dosesDiarias = comprimidos;
+  //   widget.remedio.mensagem = mensagemController.text;
 
-    final dbHelper = DatabaseHelper();
-    await dbHelper.updateRemedio(widget.remedio);
+  //   final dbHelper = DatabaseHelper();
+  //   await dbHelper.updateRemedio(widget.remedio);
 
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text('Remédio atualizado com sucesso!')));
-  }
+  //   ScaffoldMessenger.of(
+  //     context,
+  //   ).showSnackBar(SnackBar(content: Text('Remédio atualizado com sucesso!')));
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -109,11 +109,6 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
         backgroundColor: Colors.white,
         iconTheme: IconThemeData(color: Colors.black),
         actions: [
-          IconButton(
-            icon: Icon(Icons.save, color: Colors.blue),
-            onPressed: _salvarAlteracoes,
-            tooltip: 'Salvar alterações',
-          ),
           IconButton(
             icon: Icon(Icons.delete, color: Colors.red),
             onPressed: confirmarExclusao,
@@ -272,14 +267,14 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
 }
 
 class TelaInicial extends StatefulWidget {
-  TelaInicial({super.key});
+  const TelaInicial({super.key});
 
   @override
   State<TelaInicial> createState() => _TelaInicialState();
 }
 
 class _TelaInicialState extends State<TelaInicial> {
-  int _indiceSelecionado = 0;
+  int _indiceSelecionado = 1;
   String _horaAtual = '';
   late Timer _timer;
 
@@ -318,18 +313,7 @@ class _TelaInicialState extends State<TelaInicial> {
 
   void _onTap(int index) {
     setState(() {
-      if (index == 2) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => AdicionarRemedioPage()),
-        ).then((novoRemedioAdicionado) {
-          if (novoRemedioAdicionado == true) {
-            _carregarRemedios();
-          }
-        });
-      } else {
-        _indiceSelecionado = index;
-      }
+      _indiceSelecionado = index;
     });
   }
 
@@ -360,14 +344,12 @@ class _TelaInicialState extends State<TelaInicial> {
       ),
       body: () {
         switch (_indiceSelecionado) {
-          case 1:
+          case 0:
             return Padding(
               padding: EdgeInsets.all(16),
               child: TelaCalendario(remedios: remedios),
             );
-          case 3:
-            return TelaFarmacia();
-          default:
+          case 1:
             return Column(
               children: [
                 SizedBox(height: 12),
@@ -482,27 +464,39 @@ class _TelaInicialState extends State<TelaInicial> {
                 ),
               ],
             );
+          case 2:
+            return TelaFarmacia();
+          default:
+            return Container();
         }
       }(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AdicionarRemedioPage()),
+          ).then((novoRemedioAdicionado) {
+            if (novoRemedioAdicionado == true) {
+              _carregarRemedios();
+            }
+          });
+        },
+        backgroundColor: Colors.blue,
+        child: Icon(Icons.add, color: Colors.white),
+        tooltip: 'Adicionar Remédio',
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white,
         currentIndex: _indiceSelecionado,
         onTap: _onTap,
-        type: BottomNavigationBarType.fixed,
+        type: BottomNavigationBarType.shifting,
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.grey,
         items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.calendar_today), label: 'Calendário'),
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Início'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today),
-            label: 'Calendário',
-          ),
-          BottomNavigationBarItem(icon: Icon(Icons.add), label: 'Adicionar'),
           BottomNavigationBarItem(icon: Icon(Icons.place), label: 'Farmácias'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.inventory_2),
-            label: 'Estoque',
-          ),
         ],
       ),
     );

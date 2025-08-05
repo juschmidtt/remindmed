@@ -6,10 +6,10 @@ class RemedioCard extends StatelessWidget {
   final VoidCallback? onTap;
 
   const RemedioCard({
-    Key? key,
+    super.key,
     required this.remedio,
     this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

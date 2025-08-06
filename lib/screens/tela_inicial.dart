@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 import 'package:remindmed/screens/tela_add.dart';
 import 'package:remindmed/screens/tela_calendario.dart';
 import 'package:remindmed/screens/tela_farmacia.dart';
@@ -17,29 +20,78 @@ class DetalheRemedioPage extends StatefulWidget {
 
 class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
   late int comprimidos;
-  List<TimeOfDay> horarios = [
-    TimeOfDay(hour: 8, minute: 30),
-    TimeOfDay(hour: 16, minute: 30),
-    TimeOfDay(hour: 0, minute: 30),
-  ];
+  late List<TimeOfDay> horarios;
 
   late TextEditingController mensagemController;
+
+  final FlutterLocalNotificationsPlugin _notificacoesPlugin = FlutterLocalNotificationsPlugin();
 
   @override
   void initState() {
     super.initState();
     comprimidos = widget.remedio.dosesDiarias;
+    horarios = List.generate(
+      widget.remedio.dosesDiarias,
+      (index) => TimeOfDay(hour: 8 + (index * 2) % 24, minute: 0),
+    );
     mensagemController = TextEditingController(text: widget.remedio.mensagem);
 
     mensagemController.addListener(() {
       widget.remedio.mensagem = mensagemController.text;
     });
+
+    final android = AndroidInitializationSettings('@mipmap/ic_launcher');
+    final settings = InitializationSettings(android: android);
+    _notificacoesPlugin.initialize(settings);
+    tz.initializeTimeZones();
+    agendarNotificacoes();
   }
 
   @override
   void dispose() {
     mensagemController.dispose();
     super.dispose();
+  }
+
+  tz.TZDateTime _proximoHorario(TimeOfDay time) {
+    final now = tz.TZDateTime.now(tz.local);
+    var scheduled = tz.TZDateTime(
+      tz.local,
+      now.year,
+      now.month,
+      now.day,
+      time.hour,
+      time.minute,
+    );
+    if (scheduled.isBefore(now)) {
+      scheduled = scheduled.add(Duration(days: 1));
+    }
+    return scheduled;
+  }
+
+  Future<void> agendarNotificacoes() async {
+    await _notificacoesPlugin.cancel(widget.remedio.id!);
+    for (int i = 0; i < horarios.length; i++) {
+      await _notificacoesPlugin.zonedSchedule(
+        widget.remedio.id! * 10 + i,
+        'Hora do remédio: ${widget.remedio.nome}',
+        widget.remedio.mensagem,
+        _proximoHorario(horarios[i]),
+        const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'remedios_channel',
+            'Lembretes de Remédios',
+            channelDescription: 'Notificações para lembrar de tomar remédios',
+            importance: Importance.max,
+            priority: Priority.high,
+          ),
+        ),
+        androidAllowWhileIdle: true,
+        matchDateTimeComponents: DateTimeComponents.time,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.wallClockTime,
+      );
+    }
   }
 
   String formatarHora(TimeOfDay t) {
@@ -487,12 +539,17 @@ class _TelaInicialState extends State<TelaInicial> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Color(0xFFFFFFFF),
+        elevation: 0,
         currentIndex: _indiceSelecionado,
         onTap: _onTap,
-        type: BottomNavigationBarType.shifting,
+        type: BottomNavigationBarType.fixed,
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.grey,
+        selectedIconTheme: IconThemeData(color: Colors.blue),
+        unselectedIconTheme: IconThemeData(color: Colors.grey),
+        selectedLabelStyle: TextStyle(color: Colors.blue),
+        unselectedLabelStyle: TextStyle(color: Colors.grey),
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.calendar_today), label: 'Calendário'),
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Início'),

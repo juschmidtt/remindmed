@@ -12,6 +12,7 @@ class Remedio {
   String iconeFontFamily; 
   String mensagem;
   int dosesDiarias; 
+  DateTime? dataInicio;
 
   Remedio({
     this.id,
@@ -25,6 +26,7 @@ class Remedio {
     required this.iconeFontFamily,
     this.mensagem = "Não esqueça do seu remédio!",
     this.dosesDiarias = 1,
+    this.dataInicio,
   });
    
   Map<String, dynamic> toMap() {
@@ -40,6 +42,7 @@ class Remedio {
       'iconeFontFamily': iconeFontFamily,
       'mensagem': mensagem,
       'dosesDiarias': dosesDiarias,
+      'dataInicio': dataInicio?.toIso8601String(),
     };
   }
 
@@ -56,13 +59,13 @@ class Remedio {
       iconeFontFamily: map['iconeFontFamily'],
       mensagem: map['mensagem'] ?? "Não esqueça do seu remédio!",
       dosesDiarias: map['dosesDiarias'] ?? 1,
+      dataInicio: map['dataInicio'] != null ? DateTime.tryParse(map['dataInicio']) : null,
     );
   }
 
   Color get cor => Color(corValue);
   IconData get icone => IconData(iconeCodePoint, fontFamily: iconeFontFamily);
 
-  // Método copyWith para facilitar cópia com alterações
   Remedio copyWith({
     int? id,
     String? nome,
@@ -75,6 +78,7 @@ class Remedio {
     String? iconeFontFamily,
     String? mensagem,
     int? dosesDiarias,
+    DateTime? dataInicio,
   }) {
     return Remedio(
       id: id ?? this.id,
@@ -88,6 +92,7 @@ class Remedio {
       iconeFontFamily: iconeFontFamily ?? this.iconeFontFamily,
       mensagem: mensagem ?? this.mensagem,
       dosesDiarias: dosesDiarias ?? this.dosesDiarias,
+      dataInicio: dataInicio ?? this.dataInicio,
     );
   }
 }

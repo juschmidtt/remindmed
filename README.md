@@ -4,7 +4,7 @@
 Aplicativo de lembretes de medicamentos desenvolvido em Flutter, projetado para ajudar usuários a gerenciar horários, doses e mensagens relacionadas aos seus tratamentos.
 
 ## Funcionalidades
-This project is a starting point for a Flutter application.
+
 Cadastro de remédios com nome, dosagem e frequência.
 
 Gerenciamento de horários para lembretes diários.
@@ -21,12 +21,37 @@ Exclusão de remédios com atualização automática da lista.
 
 Integração com banco de dados local para persistência de dados.
 
+## Tecnologias Utilizadas
+Flutter (Dart)
 
-```python
-print("teste")
+SQLite para armazenamento local
+
+Material Design para UI
+
+Pacotes Flutter:
+
+provider para gerenciamento de estado
+
+intl para formatação de data e hora
+
+##  Como Executar o Projeto
+### Clone este repositório
+
+```bash
+git clone https://github.com/juschmidtt/remindmed.git
 ```
-
-
+### Acesse a pasta do projeto
+```bash
+cd remindmed
+```
+### Instale as dependências
+```bash
+flutter pub get
+```
+### Execute o app
+```bash
+flutter run
+```
 
 A few resources to get you started if this is your first Flutter project:
 

@@ -19,8 +19,8 @@ Aplicativo de lembretes de medicamentos desenvolvido em Flutter, projetado para 
 * SQLite para armazenamento local
 * Material Design para UI
 * Pacotes Flutter:
-**provider para gerenciamento de estado
-**intl para formatação de data e hora
+  * provider para gerenciamento de estado
+  * intl para formatação de data e hora
 
 ##  Como Executar o Projeto
 ### Clone este repositório

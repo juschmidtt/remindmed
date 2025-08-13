@@ -1,0 +1,23 @@
+{
+  'version': 0,
+  'use-external-names': 'false',
+  'case-sensitive': 'false',
+  'roots': [{
+    'type': 'directory',
+    'name': "/Users/joaovictormuraro/Desktop/IFC /Devix/remindmed/build/macos/Build/Products/Debug/flutter_native_timezone/flutter_native_timezone.framework/Modules"
+    'contents': [{
+      'type': 'file',
+      'name': "module.modulemap",
+      'external-contents': "/Users/joaovictormuraro/Desktop/IFC /Devix/remindmed/build/macos/Build/Intermediates.noindex/Pods.build/Debug/flutter_native_timezone.build/unextended-module.modulemap",
+    }]
+    },
+    {
+    'type': 'directory',
+    'name': "/Users/joaovictormuraro/Desktop/IFC /Devix/remindmed/build/macos/Build/Products/Debug/flutter_native_timezone/flutter_native_timezone.framework/Headers"
+    'contents': [{
+      'type': 'file',
+      'name': "flutter_native_timezone-Swift.h",
+      'external-contents': "/Users/joaovictormuraro/Desktop/IFC /Devix/remindmed/build/macos/Build/Intermediates.noindex/Pods.build/Debug/flutter_native_timezone.build/unextended-interface-header.h",
+    }]
+    }]
+}

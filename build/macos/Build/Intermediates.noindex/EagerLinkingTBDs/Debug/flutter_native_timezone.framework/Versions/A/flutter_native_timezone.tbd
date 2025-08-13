@@ -1,0 +1,51 @@
+{
+  "main_library": {
+    "exported_symbols": [
+      {
+        "data": {
+          "global": [
+            "_$s23flutter_native_timezone27FlutterNativeTimezonePluginC6handle_6resultySo0D10MethodCallC_yypSgctF",
+            "_flutter_native_timezoneVersionNumber",
+            "_$s23flutter_native_timezone27FlutterNativeTimezonePluginC6handle_6resultySo0D10MethodCallC_yypSgctFTq",
+            "_$s23flutter_native_timezone27FlutterNativeTimezonePluginCACycfc",
+            "_$s23flutter_native_timezone27FlutterNativeTimezonePluginC8register4withySo0dG9Registrar_p_tFZ",
+            "_$s23flutter_native_timezone27FlutterNativeTimezonePluginCMn",
+            "_$s23flutter_native_timezone27FlutterNativeTimezonePluginCN",
+            "_$s23flutter_native_timezone27FlutterNativeTimezonePluginCfD",
+            "_$s23flutter_native_timezone27FlutterNativeTimezonePluginCMa",
+            "_flutter_native_timezoneVersionString",
+            "_$s23flutter_native_timezone27FlutterNativeTimezonePluginCACycfC"
+          ],
+          "objc_class": [
+            "PodsDummy_flutter_native_timezone",
+            "_TtC23flutter_native_timezone27FlutterNativeTimezonePlugin"
+          ]
+        }
+      }
+    ],
+    "flags": [
+      {
+        "attributes": [
+          "not_app_extension_safe"
+        ]
+      }
+    ],
+    "install_names": [
+      {
+        "name": "@rpath/flutter_native_timezone.framework/Versions/A/flutter_native_timezone"
+      }
+    ],
+    "swift_abi": [
+      {
+        "abi": 7
+      }
+    ],
+    "target_info": [
+      {
+        "min_deployment": "11",
+        "target": "arm64-macos"
+      }
+    ]
+  },
+  "tapi_tbd_version": 5
+}

@@ -10,6 +10,7 @@
         "cupertino_icons",
         "flutter",
         "flutter_local_notifications",
+        "flutter_native_timezone",
         "geolocator",
         "intl",
         "path",
@@ -58,6 +59,15 @@
         "test_api",
         "vector_math",
         "vm_service"
+      ]
+    },
+    {
+      "name": "flutter_native_timezone",
+      "version": "2.0.0",
+      "dependencies": [
+        "flutter",
+        "flutter_web_plugins",
+        "js"
       ]
     },
     {
@@ -337,6 +347,18 @@
         "stream_channel",
         "string_scanner",
         "term_glyph"
+      ]
+    },
+    {
+      "name": "flutter_web_plugins",
+      "version": "0.0.0",
+      "dependencies": [
+        "characters",
+        "collection",
+        "flutter",
+        "material_color_utilities",
+        "meta",
+        "vector_math"
       ]
     },
     {
@@ -635,18 +657,6 @@
       "dependencies": []
     },
     {
-      "name": "flutter_web_plugins",
-      "version": "0.0.0",
-      "dependencies": [
-        "characters",
-        "collection",
-        "flutter",
-        "material_color_utilities",
-        "meta",
-        "vector_math"
-      ]
-    },
-    {
       "name": "uuid",
       "version": "4.5.1",
       "dependencies": [
@@ -716,6 +726,11 @@
         "collection",
         "meta"
       ]
+    },
+    {
+      "name": "js",
+      "version": "0.7.2",
+      "dependencies": []
     }
   ],
   "configVersion": 1

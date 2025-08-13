@@ -104,6 +104,12 @@
       "languageVersion": "2.17"
     },
     {
+      "name": "flutter_native_timezone",
+      "rootUri": "file:///Users/joaovictormuraro/.pub-cache/hosted/pub.dev/flutter_native_timezone-2.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "flutter_test",
       "rootUri": "file:///Users/joaovictormuraro/development/flutter/packages/flutter_test",
       "packageUri": "lib/",
@@ -156,6 +162,12 @@
       "rootUri": "file:///Users/joaovictormuraro/.pub-cache/hosted/pub.dev/intl-0.18.1",
       "packageUri": "lib/",
       "languageVersion": "2.12"
+    },
+    {
+      "name": "js",
+      "rootUri": "file:///Users/joaovictormuraro/.pub-cache/hosted/pub.dev/js-0.7.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.7"
     },
     {
       "name": "leak_tracker",

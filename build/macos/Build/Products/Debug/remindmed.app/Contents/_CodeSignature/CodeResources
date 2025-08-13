@@ -23,10 +23,10 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			5ElRlrC+l4ioRnw8oD7lSenLgIE=
+			GABnQCUpC2E3Sz2r0e9hCR9+3FU=
 			</data>
 			<key>requirement</key>
-			<string>cdhash H"e4495196b0be9788a8467c3ca03ee549e9cb8081"</string>
+			<string>cdhash H"1800674025290b61374b3dabd1ef61091f7edc55"</string>
 		</dict>
 		<key>Frameworks/FlutterMacOS.framework</key>
 		<dict>
@@ -45,6 +45,15 @@
 			</data>
 			<key>requirement</key>
 			<string>cdhash H"828c1c11bcf80ea15207f37f0e5928bdcacfbe3d"</string>
+		</dict>
+		<key>Frameworks/flutter_native_timezone.framework</key>
+		<dict>
+			<key>cdhash</key>
+			<data>
+			bovjt66RuXvoyy4CMNGBlTzAy/0=
+			</data>
+			<key>requirement</key>
+			<string>cdhash H"6e8be3b7ae91b97be8cb2e0230d181953cc0cbfd"</string>
 		</dict>
 		<key>Frameworks/geolocator_apple.framework</key>
 		<dict>
@@ -257,10 +266,10 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			qhVie+RSmqx5RRbWCKMnCOhOBB4=
+			b9ebeBG8Ot5dIRjo/1zjwe2iDyg=
 			</data>
 			<key>requirement</key>
-			<string>cdhash H"aa15627be4529aac794516d608a32708e84e041e"</string>
+			<string>cdhash H"6fd79b7811bc3ade5d2118e8ff5ce3c1eda20f28"</string>
 		</dict>
 		<key>Resources/AppIcon.icns</key>
 		<dict>

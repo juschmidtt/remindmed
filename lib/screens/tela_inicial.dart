@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:remindmed/screens/tela_add.dart';
@@ -27,6 +28,18 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
   final FlutterLocalNotificationsPlugin _notificacoesPlugin =
       FlutterLocalNotificationsPlugin();
 
+  Future<void> _setupTimeZone() async {
+    tz.initializeTimeZones();
+    String name;
+    try {
+      name = await FlutterNativeTimezone.getLocalTimezone();
+    } catch (e) {
+      name = 'America/Sao_Paulo'; 
+    }
+    tz.setLocalLocation(tz.getLocation(name));
+    print('[DEBUG] Timezone configurado: $name');
+  }
+
   @override
   void initState() {
     super.initState();
@@ -48,17 +61,17 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
       widget.remedio.mensagem = mensagemController.text;
     });
 
-    tz.initializeTimeZones();
-    tz.setLocalLocation(tz.getLocation(_timeZoneName()));
-
-    _configurarNotificacoes().then((_) {
-      agendarNotificacoes();
+    _setupTimeZone().then((_) {
+      _configurarNotificacoes().then((_) {
+        agendarNotificacoes();
+      });
+      _testarNotificacao();
     });
   }
 
   Future<void> _configurarNotificacoes() async {
     const android = AndroidInitializationSettings('@mipmap/ic_launcher');
-    
+
     const darwin = DarwinInitializationSettings(
       requestAlertPermission: true,
       requestBadgePermission: true,
@@ -71,16 +84,23 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
       macOS: darwin, 
     );
 
-    await _notificacoesPlugin.initialize(
-      settings,
-      onDidReceiveNotificationResponse: (NotificationResponse response) async {
-      },
-    );
+    await _notificacoesPlugin.initialize(settings);
 
-    final androidPlugin = _notificacoesPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+    // Permissões Android 13+
+    final androidPlugin = _notificacoesPlugin
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
     if (androidPlugin != null) {
       await androidPlugin.requestNotificationsPermission();
     }
+
+    // Permissões iOS/macOS
+    final iosPlugin = _notificacoesPlugin
+        .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
+    await iosPlugin?.requestPermissions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
   }
 
   String _timeZoneName() {
@@ -98,7 +118,7 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
   }
 
   tz.TZDateTime _proximoHorario(TimeOfDay time) {
-    final now = tz.TZDateTime.now(tz.local).toLocal();
+    final now = tz.TZDateTime.now(tz.local);
     var scheduled = tz.TZDateTime(
       tz.local,
       now.year,
@@ -107,27 +127,25 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
       time.hour,
       time.minute,
     );
-    if (scheduled.isBefore(now)) {
+    if (!scheduled.isAfter(now.add(Duration(seconds: 5)))) {
       scheduled = scheduled.add(Duration(days: 1));
     }
     return scheduled;
   }
 
   Future<void> agendarNotificacoes() async {
-    tz.initializeTimeZones();
-    await _notificacoesPlugin.cancelAll();
+    await _notificacoesPlugin.cancel(widget.remedio.id!);
     if (horarios.isEmpty) return;
-
 
     for (int i = 0; i < horarios.length; i++) {
       final time = horarios[i];
       final scheduledDate = _proximoHorario(time);
-      print('Agendando notificação para ${scheduledDate.toLocal()} do remédio ${widget.remedio.nome}');
-
+      print('[DEBUG] Agendando notificação para ${scheduledDate.toLocal()} do remédio ${widget.remedio.nome}');
+      final idNotificacao = widget.remedio.id! * 10 + i;
       await _notificacoesPlugin.zonedSchedule(
-        widget.remedio.id! * 10 + i, 
-        'Hora do remédio: ${widget.remedio.nome}', 
-        widget.remedio.mensagem, 
+        idNotificacao,
+        'Hora do remédio: ${widget.remedio.nome}',
+        widget.remedio.mensagem,
         scheduledDate,
         const NotificationDetails(
           android: AndroidNotificationDetails(
@@ -144,6 +162,27 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
         uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
       );
     }
+  }
+  Future<void> _testarNotificacao() async {
+    final agora = tz.TZDateTime.now(tz.local).add(Duration(seconds: 10));
+    await _notificacoesPlugin.zonedSchedule(
+      9999, // id de teste
+      'Teste de notificação',
+      'Se você recebeu, está funcionando!',
+      agora,
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'teste_channel',
+          'Teste',
+          importance: Importance.max,
+          priority: Priority.high,
+        ),
+        iOS: DarwinNotificationDetails(),
+      ),
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+    );
   }
 
   String formatarHora(TimeOfDay t) {

@@ -21,7 +21,7 @@ class DatabaseHelper {
 
     return await openDatabase(
       databasePath,
-      version: 1,
+      version: 2,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -40,21 +40,28 @@ class DatabaseHelper {
         iconeCodePoint INTEGER,
         iconeFontFamily TEXT,
         mensagem TEXT DEFAULT "Não esqueça do seu remédio!",
-        dosesDiarias INTEGER DEFAULT 1
+        dosesDiarias INTEGER DEFAULT 1,
+        horarios TEXT,
+        dataInicio TEXT
       )
     ''');
   }
 
   Future _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    if (oldVersion < 1) {
-    }
-    if (oldVersion < 1 && newVersion >= 1) {
+    if (oldVersion < 2) {
       var tableInfo = await db.rawQuery("PRAGMA table_info(remedios)");
+
       if (!tableInfo.any((column) => column['name'] == 'mensagem')) {
         await db.execute("ALTER TABLE remedios ADD COLUMN mensagem TEXT DEFAULT 'Não esqueça do seu remédio!'");
       }
       if (!tableInfo.any((column) => column['name'] == 'dosesDiarias')) {
         await db.execute("ALTER TABLE remedios ADD COLUMN dosesDiarias INTEGER DEFAULT 1");
+      }
+      if (!tableInfo.any((column) => column['name'] == 'dataInicio')) {
+        await db.execute("ALTER TABLE remedios ADD COLUMN dataInicio TEXT");
+      }
+      if (!tableInfo.any((column) => column['name'] == 'horarios')) {
+        await db.execute("ALTER TABLE remedios ADD COLUMN horarios TEXT");
       }
     }
   }

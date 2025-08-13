@@ -102,7 +102,7 @@ class _TelaFarmaciaState extends State<TelaFarmacia> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // fundo branco
+      backgroundColor: Colors.white, 
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -139,7 +139,7 @@ class _TelaFarmaciaState extends State<TelaFarmacia> {
                 itemBuilder: (context, index) {
                   final farmacia = farmacias[index];
                   return Card(
-                    color: Colors.white,
+                    color: const Color.fromARGB(255, 251, 249, 249),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                       side: BorderSide(color: Colors.grey.shade200),

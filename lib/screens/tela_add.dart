@@ -21,6 +21,8 @@ class _AdicionarRemedioPageState extends State<AdicionarRemedioPage> {
   int quantidadeDias = 1;
   int vezesAoDia = 1;
 
+  List<TimeOfDay> horarios = [];
+
   Map<String, dynamic> getCorEIconePorTipo(String tipo) {
     switch (tipo.toLowerCase()) {
       case 'comprimido':
@@ -36,9 +38,22 @@ class _AdicionarRemedioPageState extends State<AdicionarRemedioPage> {
     }
   }
 
+  void inicializarHorarios() {
+    horarios = List.generate(
+      vezesAoDia,
+      (index) => TimeOfDay(hour: (8 + (index * 2)) % 24, minute: 0),
+    );
+  }
+
   void salvarRemedio() async {
     final tipoInfo = getCorEIconePorTipo(tipoSelecionado);
     final IconData icone = tipoInfo['icone'];
+
+    final List<String> horariosFormatados = horarios.map((t) {
+      final hourStr = t.hour.toString().padLeft(2, '0');
+      final minuteStr = t.minute.toString().padLeft(2, '0');
+      return '$hourStr:$minuteStr';
+    }).toList();
 
     final novoRemedio = Remedio(
       id: null,
@@ -54,6 +69,7 @@ class _AdicionarRemedioPageState extends State<AdicionarRemedioPage> {
       iconeFontFamily: icone.fontFamily ?? '',
       dosesDiarias: vezesAoDia,
       mensagem: '',
+      horarios: horariosFormatados,
     );
 
     final dbHelper = DatabaseHelper();
@@ -118,12 +134,45 @@ class _AdicionarRemedioPageState extends State<AdicionarRemedioPage> {
   void initState() {
     super.initState();
     nomeController.addListener(() => setState(() {}));
+    inicializarHorarios();
   }
 
   @override
   void dispose() {
     nomeController.dispose();
     super.dispose();
+  }
+
+  Future<void> selecionarHorario(int index) async {
+    final TimeOfDay? novoHorario = await showTimePicker(
+      context: context,
+      initialTime: horarios[index],
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            dialogBackgroundColor: Colors.white,
+            colorScheme: ColorScheme.light(
+              primary: const Color.fromARGB(255, 118, 178, 228), // cor de destaque
+              onPrimary: Colors.white, // texto nos botões
+              onSurface: Colors.black, // texto normal
+            ),
+            timePickerTheme: TimePickerThemeData(
+              backgroundColor: Colors.white,
+              hourMinuteTextColor: Colors.black,
+              dayPeriodTextColor: Colors.black,
+              dialHandColor: Colors.blue,
+              dialBackgroundColor: const Color.fromARGB(255, 238, 238, 238),
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (novoHorario != null) {
+      setState(() {
+        horarios[index] = novoHorario;
+      });
+    }
   }
 
   @override
@@ -204,13 +253,44 @@ class _AdicionarRemedioPageState extends State<AdicionarRemedioPage> {
                 Text('Vezes ao dia:'),
                 IconButton(
                   icon: Icon(Icons.remove_circle_outline, color: Colors.black),
-                  onPressed: () => setState(() => vezesAoDia = (vezesAoDia - 1).clamp(1, 20)),
+                  onPressed: () {
+                    if (vezesAoDia > 1) {
+                      setState(() {
+                        vezesAoDia = (vezesAoDia - 1).clamp(1, 20);
+                        inicializarHorarios();
+                      });
+                    }
+                  },
                 ),
                 Text('$vezesAoDia'),
                 IconButton(
                   icon: Icon(Icons.add_circle_outline, color: Colors.black),
-                  onPressed: () => setState(() => vezesAoDia = (vezesAoDia + 1).clamp(1, 20)),
+                  onPressed: () {
+                    if (vezesAoDia < 20) {
+                      setState(() {
+                        vezesAoDia = (vezesAoDia + 1).clamp(1, 20);
+                        inicializarHorarios();
+                      });
+                    }
+                  },
                 ),
+              ],
+            ),
+            SizedBox(height: 12),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Horários:', style: TextStyle(fontWeight: FontWeight.bold)),
+                SizedBox(height: 8),
+                ...List.generate(horarios.length, (index) {
+                  final horario = horarios[index];
+                  final horarioFormatado = horario.format(context);
+                  return ListTile(
+                    title: Text('Horário ${index + 1}: $horarioFormatado'),
+                    trailing: Icon(Icons.edit),
+                    onTap: () => selecionarHorario(index),
+                  );
+                }),
               ],
             ),
             SizedBox(height: 16),

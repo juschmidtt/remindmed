@@ -12,6 +12,7 @@ class Remedio {
   String iconeFontFamily; 
   String mensagem;
   int dosesDiarias; 
+  List<String> horarios;
   DateTime? dataInicio;
 
   Remedio({
@@ -26,6 +27,7 @@ class Remedio {
     required this.iconeFontFamily,
     this.mensagem = "Não esqueça do seu remédio!",
     this.dosesDiarias = 1,
+    required this.horarios,
     this.dataInicio,
   });
    
@@ -42,6 +44,7 @@ class Remedio {
       'iconeFontFamily': iconeFontFamily,
       'mensagem': mensagem,
       'dosesDiarias': dosesDiarias,
+      'horarios': horarios.join(','),
       'dataInicio': dataInicio?.toIso8601String(),
     };
   }
@@ -59,6 +62,9 @@ class Remedio {
       iconeFontFamily: map['iconeFontFamily'],
       mensagem: map['mensagem'] ?? "Não esqueça do seu remédio!",
       dosesDiarias: map['dosesDiarias'] ?? 1,
+      horarios: map['horarios'] != null && (map['horarios'] as String).isNotEmpty
+          ? (map['horarios'] as String).split(',')
+          : [],
       dataInicio: map['dataInicio'] != null ? DateTime.tryParse(map['dataInicio']) : null,
     );
   }
@@ -78,6 +84,7 @@ class Remedio {
     String? iconeFontFamily,
     String? mensagem,
     int? dosesDiarias,
+    List<String>? horarios,
     DateTime? dataInicio,
   }) {
     return Remedio(
@@ -92,6 +99,7 @@ class Remedio {
       iconeFontFamily: iconeFontFamily ?? this.iconeFontFamily,
       mensagem: mensagem ?? this.mensagem,
       dosesDiarias: dosesDiarias ?? this.dosesDiarias,
+      horarios: horarios ?? this.horarios,
       dataInicio: dataInicio ?? this.dataInicio,
     );
   }

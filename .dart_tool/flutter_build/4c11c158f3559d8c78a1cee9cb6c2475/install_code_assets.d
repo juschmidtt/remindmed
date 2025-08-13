@@ -1,0 +1,1 @@
+ /Users/joaovictormuraro/Desktop/IFC\ /Devix/remindmed/.dart_tool/flutter_build/4c11c158f3559d8c78a1cee9cb6c2475/native_assets.json: 

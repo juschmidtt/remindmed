@@ -24,27 +24,71 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
 
   late TextEditingController mensagemController;
 
-  final FlutterLocalNotificationsPlugin _notificacoesPlugin = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin _notificacoesPlugin =
+      FlutterLocalNotificationsPlugin();
 
   @override
   void initState() {
     super.initState();
     comprimidos = widget.remedio.dosesDiarias;
-    horarios = List.generate(
-      widget.remedio.dosesDiarias,
-      (index) => TimeOfDay(hour: 8 + (index * 2) % 24, minute: 0),
-    );
+    if (widget.remedio.horarios.isNotEmpty) {
+      horarios = widget.remedio.horarios.map((h) {
+        final parts = h.split(':');
+        return TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1]));
+      }).toList();
+    } else {
+      horarios = List.generate(
+        comprimidos,
+        (index) => TimeOfDay(hour: 8 + (index * 2) % 24, minute: 0),
+      );
+    }
     mensagemController = TextEditingController(text: widget.remedio.mensagem);
 
     mensagemController.addListener(() {
       widget.remedio.mensagem = mensagemController.text;
     });
 
-    final android = AndroidInitializationSettings('@mipmap/ic_launcher');
-    final settings = InitializationSettings(android: android);
-    _notificacoesPlugin.initialize(settings);
     tz.initializeTimeZones();
-    agendarNotificacoes();
+    tz.setLocalLocation(tz.getLocation(_timeZoneName()));
+
+    _configurarNotificacoes().then((_) {
+      agendarNotificacoes();
+    });
+  }
+
+  Future<void> _configurarNotificacoes() async {
+    const android = AndroidInitializationSettings('@mipmap/ic_launcher');
+    
+    const darwin = DarwinInitializationSettings(
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+    );
+
+    const InitializationSettings settings = InitializationSettings(
+      android: android,
+      iOS: darwin,
+      macOS: darwin, 
+    );
+
+    await _notificacoesPlugin.initialize(
+      settings,
+      onDidReceiveNotificationResponse: (NotificationResponse response) async {
+      },
+    );
+
+    final androidPlugin = _notificacoesPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+    if (androidPlugin != null) {
+      await androidPlugin.requestNotificationsPermission();
+    }
+  }
+
+  String _timeZoneName() {
+    try {
+      return tz.local.name;
+    } catch (_) {
+      return 'America/Sao_Paulo';
+    }
   }
 
   @override
@@ -54,7 +98,7 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
   }
 
   tz.TZDateTime _proximoHorario(TimeOfDay time) {
-    final now = tz.TZDateTime.now(tz.local);
+    final now = tz.TZDateTime.now(tz.local).toLocal();
     var scheduled = tz.TZDateTime(
       tz.local,
       now.year,
@@ -70,13 +114,21 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
   }
 
   Future<void> agendarNotificacoes() async {
-    await _notificacoesPlugin.cancel(widget.remedio.id!);
+    tz.initializeTimeZones();
+    await _notificacoesPlugin.cancelAll();
+    if (horarios.isEmpty) return;
+
+
     for (int i = 0; i < horarios.length; i++) {
+      final time = horarios[i];
+      final scheduledDate = _proximoHorario(time);
+      print('Agendando notificação para ${scheduledDate.toLocal()} do remédio ${widget.remedio.nome}');
+
       await _notificacoesPlugin.zonedSchedule(
-        widget.remedio.id! * 10 + i,
-        'Hora do remédio: ${widget.remedio.nome}',
-        widget.remedio.mensagem,
-        _proximoHorario(horarios[i]),
+        widget.remedio.id! * 10 + i, 
+        'Hora do remédio: ${widget.remedio.nome}', 
+        widget.remedio.mensagem, 
+        scheduledDate,
         const NotificationDetails(
           android: AndroidNotificationDetails(
             'remedios_channel',
@@ -85,11 +137,11 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
             importance: Importance.max,
             priority: Priority.high,
           ),
+          iOS: DarwinNotificationDetails(),
         ),
         androidAllowWhileIdle: true,
         matchDateTimeComponents: DateTimeComponents.time,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.wallClockTime,
+        uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
       );
     }
   }
@@ -104,32 +156,68 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
     final novo = await showTimePicker(
       context: context,
       initialTime: horarios[index],
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            dialogBackgroundColor: Colors.white,
+            colorScheme: ColorScheme.light(
+              primary: const Color.fromARGB(255, 118, 178, 228), // cor de destaque
+              onPrimary: Colors.white, // texto nos botões 
+              onSurface: Colors.black, // texto normal
+            ),
+            timePickerTheme: TimePickerThemeData(
+              backgroundColor: Colors.white,
+              hourMinuteTextColor: Colors.black,
+              dayPeriodTextColor: Colors.black,
+              dialHandColor: Colors.blue,
+              dialBackgroundColor: const Color.fromARGB(255, 238, 238, 238),
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
     if (novo != null) {
       setState(() {
         horarios[index] = novo;
+        widget.remedio.horarios = horarios
+            .map((t) => '${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}')
+            .toList();
       });
+      await _salvarAlteracoes();
+      await agendarNotificacoes();
     }
+  }
+
+  Future<void> _salvarAlteracoes() async {
+    widget.remedio.dosesDiarias = comprimidos;
+    widget.remedio.horarios = horarios
+        .map((t) => '${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}')
+        .toList();
+    widget.remedio.mensagem = mensagemController.text;
+
+    final dbHelper = DatabaseHelper();
+    await dbHelper.updateRemedio(widget.remedio);
   }
 
   Future<void> confirmarExclusao() async {
     final confirmado = await showDialog<bool>(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: Text('Excluir Remédio'),
-            content: Text('Tem certeza que deseja excluir este remédio?'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context, false),
-                child: Text('Cancelar'),
-              ),
-              TextButton(
-                onPressed: () => Navigator.pop(context, true),
-                child: Text('Excluir', style: TextStyle(color: Colors.red)),
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        title: Text('Excluir Remédio'),
+        content: Text('Tem certeza que deseja excluir este remédio?'),
+        backgroundColor: Colors.white,
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text('Cancelar'),
           ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text('Excluir', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
     );
 
     if (confirmado == true) {
@@ -230,10 +318,15 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
                   Row(
                     children: [
                       IconButton(
-                        onPressed: () {
+                        onPressed: () async {
                           setState(() {
-                            comprimidos = (comprimidos - 1).clamp(0, 20);
+                            comprimidos = (comprimidos - 1).clamp(1, 20);
+                            if (comprimidos < horarios.length) {
+                              horarios.removeLast();
+                            }
                           });
+                          await _salvarAlteracoes();
+                          await agendarNotificacoes();
                         },
                         icon: Icon(Icons.remove_circle_outline),
                       ),
@@ -246,10 +339,17 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
                         ),
                       ),
                       IconButton(
-                        onPressed: () {
+                        onPressed: () async {
                           setState(() {
                             comprimidos++;
+                            if (comprimidos > horarios.length) {
+                              horarios.add(TimeOfDay(hour: 8, minute: 0));
+                            } else if (comprimidos < horarios.length) {
+                              horarios.removeLast();
+                            }
                           });
+                          await _salvarAlteracoes();
+                          await agendarNotificacoes();
                         },
                         icon: Icon(Icons.add_circle_outline),
                       ),
@@ -327,7 +427,6 @@ class TelaInicial extends StatefulWidget {
 
 class _TelaInicialState extends State<TelaInicial> {
   int _indiceSelecionado = 1;
-  String _horaAtual = '';
   late Timer _timer;
 
   List<Remedio> remedios = [];
@@ -350,10 +449,7 @@ class _TelaInicialState extends State<TelaInicial> {
   }
 
   void _atualizarHora() {
-    final agora = DateTime.now();
     setState(() {
-      _horaAtual =
-          '${agora.hour.toString().padLeft(2, '0')}:${agora.minute.toString().padLeft(2, '0')}';
     });
   }
 
@@ -436,6 +532,7 @@ class _TelaInicialState extends State<TelaInicial> {
                                     builder: (context) => AlertDialog(
                                       title: Text('Excluir Remédio'),
                                       content: Text('Tem certeza que deseja excluir este remédio?'),
+                                      backgroundColor: const Color.fromARGB(255, 242, 243, 244),
                                       actions: [
                                         TextButton(
                                           onPressed: () => Navigator.pop(context, false),
@@ -551,7 +648,7 @@ class _TelaInicialState extends State<TelaInicial> {
         selectedLabelStyle: TextStyle(color: Colors.blue),
         unselectedLabelStyle: TextStyle(color: Colors.grey),
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.calendar_today), label: 'Calendário'),
+          BottomNavigationBarItem(icon: Icon(Icons.check), label: 'Seus remédios'),
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Início'),
           BottomNavigationBarItem(icon: Icon(Icons.place), label: 'Farmácias'),
         ],

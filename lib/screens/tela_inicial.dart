@@ -37,7 +37,6 @@ class _DetalheRemedioPageState extends State<DetalheRemedioPage> {
       name = 'America/Sao_Paulo'; 
     }
     tz.setLocalLocation(tz.getLocation(name));
-    print('[DEBUG] Timezone configurado: $name');
   }
 
   @override

@@ -6,7 +6,7 @@
 	<integer>11</integer>
 	<key>logs</key>
 	<dict>
-		<key>274D1E1E-AC20-429A-BA28-8BF9C9D7FBA6</key>
+		<key>2B1AD70B-5A92-441C-A89E-9E9E17A9C378</key>
 		<dict>
 			<key>className</key>
 			<string>IDECommandLineBuildLog</string>
@@ -15,7 +15,49 @@
 			<key>domainType</key>
 			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
 			<key>fileName</key>
-			<string>274D1E1E-AC20-429A-BA28-8BF9C9D7FBA6.xcactivitylog</string>
+			<string>2B1AD70B-5A92-441C-A89E-9E9E17A9C378.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>W</string>
+				<key>totalNumberOfAnalyzerIssues</key>
+				<integer>0</integer>
+				<key>totalNumberOfErrors</key>
+				<integer>0</integer>
+				<key>totalNumberOfTestFailures</key>
+				<integer>0</integer>
+				<key>totalNumberOfWarnings</key>
+				<integer>1</integer>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>Runner project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>Runner</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Building workspace Runner with scheme Runner and configuration Debug</string>
+			<key>timeStartedRecording</key>
+			<real>777317832.04673302</real>
+			<key>timeStoppedRecording</key>
+			<real>777317840.55983996</real>
+			<key>title</key>
+			<string>Building workspace Runner with scheme Runner and configuration Debug</string>
+			<key>uniqueIdentifier</key>
+			<string>2B1AD70B-5A92-441C-A89E-9E9E17A9C378</string>
+		</dict>
+		<key>79A2ADE4-F727-464C-963B-1DE3C48789BE</key>
+		<dict>
+			<key>className</key>
+			<string>IDECommandLineBuildLog</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>79A2ADE4-F727-464C-963B-1DE3C48789BE.xcactivitylog</string>
 			<key>hasPrimaryLog</key>
 			<true/>
 			<key>primaryObservable</key>
@@ -40,13 +82,13 @@
 			<key>signature</key>
 			<string>Building workspace Runner with scheme Runner and configuration Debug</string>
 			<key>timeStartedRecording</key>
-			<real>776792619.01574802</real>
+			<real>776805924.81580698</real>
 			<key>timeStoppedRecording</key>
-			<real>776792655.78913605</real>
+			<real>776805962.91961801</real>
 			<key>title</key>
 			<string>Building workspace Runner with scheme Runner and configuration Debug</string>
 			<key>uniqueIdentifier</key>
-			<string>274D1E1E-AC20-429A-BA28-8BF9C9D7FBA6</string>
+			<string>79A2ADE4-F727-464C-963B-1DE3C48789BE</string>
 		</dict>
 	</dict>
 </dict>

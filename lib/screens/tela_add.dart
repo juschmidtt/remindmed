@@ -76,7 +76,7 @@ class _AdicionarRemedioPageState extends State<AdicionarRemedioPage> {
     await dbHelper.insertRemedio(novoRemedio);
 
     if (!mounted) return;
-    Navigator.pop(context, true);  // Envia true para sinalizar que adicionou
+    Navigator.pop(context, true); 
   }
 
   Widget buildPreviewDetalhe() {

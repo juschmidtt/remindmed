@@ -1,0 +1,18 @@
+{
+  "" : {
+    "diagnostics" : "/Users/joaovictormuraro/Desktop/IFC /Devix/remindmed/build/macos/Build/Intermediates.noindex/Pods.build/Debug/flutter_native_timezone.build/Objects-normal/arm64/flutter_native_timezone-master.dia",
+    "emit-module-dependencies" : "/Users/joaovictormuraro/Desktop/IFC /Devix/remindmed/build/macos/Build/Intermediates.noindex/Pods.build/Debug/flutter_native_timezone.build/Objects-normal/arm64/flutter_native_timezone-master-emit-module.d",
+    "emit-module-diagnostics" : "/Users/joaovictormuraro/Desktop/IFC /Devix/remindmed/build/macos/Build/Intermediates.noindex/Pods.build/Debug/flutter_native_timezone.build/Objects-normal/arm64/flutter_native_timezone-master-emit-module.dia",
+    "swift-dependencies" : "/Users/joaovictormuraro/Desktop/IFC /Devix/remindmed/build/macos/Build/Intermediates.noindex/Pods.build/Debug/flutter_native_timezone.build/Objects-normal/arm64/flutter_native_timezone-master.swiftdeps"
+  },
+  "/Users/joaovictormuraro/.pub-cache/hosted/pub.dev/flutter_native_timezone-2.0.0/macos/Classes/FlutterNativeTimezonePlugin.swift" : {
+    "const-values" : "/Users/joaovictormuraro/Desktop/IFC /Devix/remindmed/build/macos/Build/Intermediates.noindex/Pods.build/Debug/flutter_native_timezone.build/Objects-normal/arm64/FlutterNativeTimezonePlugin.swiftconstvalues",
+    "dependencies" : "/Users/joaovictormuraro/Desktop/IFC /Devix/remindmed/build/macos/Build/Intermediates.noindex/Pods.build/Debug/flutter_native_timezone.build/Objects-normal/arm64/FlutterNativeTimezonePlugin.d",
+    "diagnostics" : "/Users/joaovictormuraro/Desktop/IFC /Devix/remindmed/build/macos/Build/Intermediates.noindex/Pods.build/Debug/flutter_native_timezone.build/Objects-normal/arm64/FlutterNativeTimezonePlugin.dia",
+    "index-unit-output-path" : "/Pods.build/Debug/flutter_native_timezone.build/Objects-normal/arm64/FlutterNativeTimezonePlugin.o",
+    "llvm-bc" : "/Users/joaovictormuraro/Desktop/IFC /Devix/remindmed/build/macos/Build/Intermediates.noindex/Pods.build/Debug/flutter_native_timezone.build/Objects-normal/arm64/FlutterNativeTimezonePlugin.bc",
+    "object" : "/Users/joaovictormuraro/Desktop/IFC /Devix/remindmed/build/macos/Build/Intermediates.noindex/Pods.build/Debug/flutter_native_timezone.build/Objects-normal/arm64/FlutterNativeTimezonePlugin.o",
+    "swift-dependencies" : "/Users/joaovictormuraro/Desktop/IFC /Devix/remindmed/build/macos/Build/Intermediates.noindex/Pods.build/Debug/flutter_native_timezone.build/Objects-normal/arm64/FlutterNativeTimezonePlugin.swiftdeps",
+    "swiftmodule" : "/Users/joaovictormuraro/Desktop/IFC /Devix/remindmed/build/macos/Build/Intermediates.noindex/Pods.build/Debug/flutter_native_timezone.build/Objects-normal/arm64/FlutterNativeTimezonePlugin~partial.swiftmodule"
+  }
+}
